@@ -1,0 +1,10 @@
+Web2 Praktikum Webseite:
+- Loggin
+- Startseite
+- Übersicht
+- Transaktionen
+- Kontos verwalten
+- Passwort ändern ?
+
+*Monatsansicht
+*Ausloggen-Button
