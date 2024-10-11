@@ -1,10 +1,27 @@
-Web2 Praktikum Webseite:
-- Loggin
-- Startseite
-- Übersicht
-- Transaktionen
-- Kontos verwalten
-- Passwort ändern ?
+Login-Seite:
 
-*Monatsansicht
-*Ausloggen-Button
+Die Login-Seite ermöglicht es dem Benutzer, sich mit E-Mail-Adresse und Passwort anzumelden. Es gibt Eingabefelder für E-Mail und Passwort sowie einen "Login"-Button. Falls der Benutzer noch kein Konto hat, gibt es einen Link zur Registrierungsseite.
+
+Registrierungsseite:
+
+Diese Seite wird für neue Benutzer erstellt, die noch kein Konto besitzen. Sie enthält Felder wie Name, E-Mail, Passwort und Passwortbestätigung. Es gibt zusätzlich ein Kontrollkästchen, um den Allgemeinen Geschäftsbedingungen zuzustimmen. Ein "Registrieren"-Button führt die Registrierung aus.
+
+Startseite (Transaktionen hinzufügen):
+
+Die Startseite ermöglicht dem Benutzer, eine neue Transaktion hinzuzufügen. Es gibt Kategorien mit Symbolen wie "Gesundheit", "Freizeit", "Bildung" usw., die den hochgeladenen Bildern entsprechen. Der Benutzer kann den Betrag und die Kategorie eingeben, zusätzlich kann eine neue Kategorie mit einem Icon hinzugefügt werden. Die Startseite zeigt auch eine schnelle Übersicht über die Gesamtbilanz der Ausgaben und Einnahmen an.
+
+Transaktionen-Detailseite:
+
+Diese Seite ermöglicht es dem Benutzer, eine Transaktion mit weiteren Details hinzuzufügen. Neben dem Betrag und der Kategorie können hier auch Fotos von Belegen hochgeladen werden. Es gibt Eingabefelder für Tags und Kommentare, die der Transaktion zugeordnet werden können. Die Struktur orientiert sich an den Beispielen aus den App-Bildern.
+
+Ausgaben-Diagramm-Seite:
+
+Diese Seite zeigt die Ausgaben des aktuellen Monats als Diagramm an, ähnlich wie auf den hochgeladenen App-Bildern. Sie bietet eine Übersicht über verschiedene Kategorien und deren Prozentsätze am Gesamtbudget. Der Benutzer kann den Zeitraum anpassen, um die Ausgaben wöchentlich, monatlich oder jährlich anzuzeigen.
+
+Kundensupport-Seite:
+
+Eine Seite mit einem Kontaktformular für den Kundenservice. Hier kann der Benutzer Probleme melden oder Verbesserungsvorschläge machen. Es gibt Felder wie Name, E-Mail, Betreff und Nachricht. Ein "Absenden"-Button schickt die Nachricht ab.
+
+Impressum-Seite:
+
+Diese Seite enthält rechtliche Informationen zum Betreiber des Budgetplaners. Dazu gehören Angaben wie der Unternehmensname, die Adresse und Kontaktinformationen. Sie soll den gesetzlichen Anforderungen entsprechen.
