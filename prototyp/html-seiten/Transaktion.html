@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neue Transaktion & Transaktionsübersicht</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .badge-success {
+            background-color: #28a745;
+        }
+        .badge-danger {
+            background-color: #dc3545;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="container mt-4">
+        <h3>Neue Transaktion</h3>
+
+        <!-- Transaktion Typ Auswahl -->
+        <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+            <label class="btn btn-outline-primary">
+                <input type="radio" name="trans_type" id="ausgabe" autocomplete="off"> Ausgabe
+            </label>
+            <label class="btn btn-outline-primary">
+                <input type="radio" name="trans_type" id="einnahme" autocomplete="off"> Einnahme
+            </label>
+            <label class="btn btn-outline-primary" data-toggle="modal" data-target="#umbuchungModal">
+                <input type="radio" name="trans_type" id="umbuchung" autocomplete="off"> Umbuchung
+            </label>
+        </div>
+
+        <!-- Formular für Transaktionsdetails -->
+        <form>
+            <div class="form-group">
+                <label for="konto">Konto</label>
+                <select class="form-control" id="konto">
+                    <option>Bargeld</option>
+                    <option>Girokonto</option>
+                    <option>Kreditkarte</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="wert">Wert</label>
+                <input type="number" class="form-control" id="wert" placeholder="0.00 €">
+            </div>
+
+            <div class="form-group">
+                <label for="kategorie">Kategorie</label>
+                <select class="form-control" id="kategorie">
+                    <option>Lebensmittel</option>
+                    <option>Miete</option>
+                    <option>Freizeit</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notiz">Notiz hinzufügen</label>
+                <input type="text" class="form-control" id="notiz" placeholder="Optional">
+            </div>
+
+            <div class="form-group">
+                <label for="datum">Datum</label>
+                <input type="date" class="form-control" id="datum">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Hinzufügen</button>
+        </form>
+
+        <!-- Übersicht der Transaktionen -->
+        <div class="mt-5">
+            <h3>Übersicht der Transaktionen</h3>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <label for="kategorie-auswahl">Kategorieauswahl</label>
+                    <select class="form-control" id="kategorie-auswahl">
+                        <option>Alle Kategorien</option>
+                        <option>Lebensmittel</option>
+                        <option>Miete</option>
+                        <option>Freizeit</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="zeitraum-von">Zeitraum von</label>
+                    <input type="date" class="form-control" id="zeitraum-von">
+                </div>
+                <div class="col-md-3">
+                    <label for="zeitraum-bis">Zeitraum bis</label>
+                    <input type="date" class="form-control" id="zeitraum-bis">
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-outline-secondary btn-block" type="button" data-toggle="collapse" data-target="#transaktionsListe" aria-expanded="false" aria-controls="transaktionsListe">
+                    Transaktionen ausklappen
+                </button>
+                <div class="collapse mt-3" id="transaktionsListe">
+                    <ul class="list-group">
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                            Transaktion 1
+                            <span class="badge badge-success">+200€</span>
+                        </button>
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                            Transaktion 2
+                            <span class="badge badge-danger">-50€</span>
+                        </button>
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                            Transaktion 3
+                            <span class="badge badge-danger">-30€</span>
+                        </button>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal zum Bearbeiten oder Löschen von Transaktionen -->
+        <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editTransactionModalLabel">Transaktion bearbeiten</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="editWert">Wert</label>
+                                <input type="number" class="form-control" id="editWert" placeholder="Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="editNotiz">Notiz</label>
+                                <input type="text" class="form-control" id="editNotiz" placeholder="Notiz">
+                            </div>
+                            <div class="form-group">
+                                <label for="editDatum">Datum</label>
+                                <input type="date" class="form-control" id="editDatum">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger">Löschen</button>
+                        <button type="button" class="btn btn-primary">Speichern</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Navbar einbinden
+        fetch("navbar.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("navbar-placeholder").innerHTML = data;
+            });
+    
+        // Footer einbinden
+        fetch("footer.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("footer-placeholder").innerHTML = data;
+            });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
