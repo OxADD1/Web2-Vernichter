@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startseite</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #chart-container {
+            width: 400px;
+            height: 400px;
+            margin: auto;
+        }
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+        }
+        .balance-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Aktueller Kontostand und Diagramm -->
+            <div class="col-md-6 d-flex flex-column align-items-center">
+                <div class="balance-box">
+                    <h4>Aktueller Kontostand</h4>
+                    <p class="balance-amount">678,91 €</p>
+                </div>
+                <div class="card" id="chart-container">
+                    <div class="card-body">
+                        <canvas id="chart"></canvas>
+                        <p class="text-center mt-2">Kategorien</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letzte 5 Transaktionen und Button zum Hinzufügen -->
+            <div class="col-md-6">
+                <h3>Letzten 5 Transaktionen</h3>
+                <div class="list-group mb-4">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 1</span>
+                        <span class="badge badge-success">+5€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 2</span>
+                        <span class="badge badge-danger">-78€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 3</span>
+                        <span class="badge badge-danger">-70€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 4</span>
+                        <span class="badge badge-success">+20€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 5</span>
+                        <span class="badge badge-success">+200€</span>
+                    </button>
+                </div>
+                <!-- Button zum Hinzufügen einer neuen Transaktion -->
+                <button type="button" class="btn btn-primary btn-block">Neue Transaktion hinzufügen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Modal zum Bearbeiten oder Löschen von Transaktionen -->
+    <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTransactionModalLabel">Transaktion bearbeiten</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="editWert">Wert</label>
+                            <input type="number" class="form-control" id="editWert" placeholder="Wert">
+                        </div>
+                        <div class="form-group">
+                            <label for="editNotiz">Notiz</label>
+                            <input type="text" class="form-control" id="editNotiz" placeholder="Notiz">
+                        </div>
+                        <div class="form-group">
+                            <label for="editDatum">Datum</label>
+                            <input type="date" class="form-control" id="editDatum">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">Löschen</button>
+                    <button type="button" class="btn btn-primary">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Navbar einbinden
+        fetch("navbar.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("navbar-placeholder").innerHTML = data;
+            });
+    
+        // Footer einbinden
+        fetch("footer.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("footer-placeholder").innerHTML = data;
+            });
+    </script>
+    <script>
+        // Placeholder for Donut Chart
+        var ctx = document.getElementById('chart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Einnahmen', 'Ausgaben'],
+                datasets: [{
+                    label: 'Finanzen',
+                    data: [300, 200],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+</body>
+</html>
