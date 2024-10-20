@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +11,26 @@
             max-width: 600px;
             margin: 50px auto;
         }
+
         .form-group label {
             font-weight: bold;
         }
+
         .toggle-buttons {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
         }
+
         .toggle-buttons label {
             margin: 0 10px;
         }
+
+        .about-us-box {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
         footer {
             margin-top: 50px;
             padding: 20px 0;
@@ -29,9 +39,20 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <div id="navbar-placeholder"></div>
+
+    <!-- Über uns Text -->
+    <div class="container about-us-box">
+        <h3>Über uns</h3>
+        <p>
+            Wir sind ein führendes Unternehmen im Bereich Finanzplanung und bieten unseren Kunden maßgeschneiderte Lösungen,
+            um ihre finanziellen Ziele zu erreichen. Mit langjähriger Erfahrung und einem engagierten Team unterstützen wir
+            Sie auf dem Weg zu Ihrer finanziellen Unabhängigkeit.
+        </p>
+    </div>
 
     <!-- Feedback Formular -->
     <div class="container feedback-container">
@@ -74,6 +95,7 @@
 
     <!-- Footer -->
     <div id="footer-placeholder"></div>
+
     <script>
         // Navbar einbinden
         fetch("navbar.html")
@@ -81,7 +103,7 @@
             .then(data => {
                 document.getElementById("navbar-placeholder").innerHTML = data;
             });
-    
+
         // Footer einbinden
         fetch("footer.html")
             .then(response => response.text())
@@ -92,4 +114,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
