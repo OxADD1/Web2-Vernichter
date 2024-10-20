@@ -1,50 +1,73 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Startseite</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        #chart-container {
+        #chart-container, #category-chart-container {
             width: 400px;
             height: 400px;
             margin: auto;
         }
+
         .balance-amount {
             font-size: 2rem;
             font-weight: bold;
             color: #28a745;
             text-align: center;
         }
+
         .balance-box {
             margin-bottom: 20px;
             text-align: center;
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <div id="navbar-placeholder"></div>
 
     <div class="container mt-4">
         <div class="row">
-            <!-- Aktueller Kontostand und Diagramm -->
+            <!-- Aktueller Kontostand und Diagramme -->
             <div class="col-md-6 d-flex flex-column align-items-center">
                 <div class="balance-box">
                     <h4>Aktueller Kontostand</h4>
                     <p class="balance-amount">678,91 €</p>
                 </div>
+
+                <!-- Erstes Diagramm für Einnahmen und Ausgaben -->
                 <div class="card" id="chart-container">
                     <div class="card-body">
                         <canvas id="chart"></canvas>
-                        <p class="text-center mt-2">Kategorien</p>
+                        <p class="text-center mt-2">Einnahmen und Ausgaben</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Letzte 5 Transaktionen und Button zum Hinzufügen -->
-            <div class="col-md-6">
+            <!-- Zweites Diagramm für Kategorien -->
+            <div class="col-md-6 d-flex flex-column align-items-center">
+                <div class="balance-box">
+                    <h4>Ausgaben nach Kategorien</h4>
+                </div>
+
+                <!-- Zweites Diagramm für Kategorien -->
+                <div class="card" id="category-chart-container">
+                    <div class="card-body">
+                        <canvas id="categoryChart"></canvas>
+                        <p class="text-center mt-2">Kategorien</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Letzte 5 Transaktionen und ausklappbare Transaktionsliste -->
+        <div class="row mt-4">
+            <div class="col-md-12">
                 <h3>Letzten 5 Transaktionen</h3>
                 <div class="list-group mb-4">
                     <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
@@ -68,12 +91,37 @@
                         <span class="badge badge-success">+200€</span>
                     </button>
                 </div>
-                <!-- Button zum Hinzufügen einer neuen Transaktion -->
-                <button type="button" class="btn btn-primary btn-block">Neue Transaktion hinzufügen</button>
+
+                <!-- Ausklappbarer Button zur Anzeige aller Transaktionen -->
+                <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#allTransactions" aria-expanded="false" aria-controls="allTransactions">
+                    Alle Transaktionen anzeigen
+                </button>
+
+                <div class="collapse mt-3" id="allTransactions">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 6
+                            <span class="badge badge-danger">-50€</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 7
+                            <span class="badge badge-success">+100€</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 8
+                            <span class="badge badge-danger">-30€</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 9
+                            <span class="badge badge-success">+500€</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
     <div id="footer-placeholder"></div>
 
     <!-- Modal zum Bearbeiten oder Löschen von Transaktionen -->
@@ -120,16 +168,15 @@
             .then(data => {
                 document.getElementById("navbar-placeholder").innerHTML = data;
             });
-    
+
         // Footer einbinden
         fetch("footer.html")
             .then(response => response.text())
             .then(data => {
                 document.getElementById("footer-placeholder").innerHTML = data;
             });
-    </script>
-    <script>
-        // Placeholder for Donut Chart
+
+        // Erstes Diagramm: Einnahmen und Ausgaben
         var ctx = document.getElementById('chart').getContext('2d');
         var chart = new Chart(ctx, {
             type: 'doughnut',
@@ -146,6 +193,25 @@
                 maintainAspectRatio: false
             }
         });
+
+        // Zweites Diagramm: Ausgaben nach Kategorien
+        var ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        var categoryChart = new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lebensmittel', 'Miete', 'Freizeit'],
+                datasets: [{
+                    label: 'Kategorien',
+                    data: [150, 100, 50],
+                    backgroundColor: ['#007bff', '#ffc107', '#17a2b8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
     </script>
 </body>
+
 </html>
