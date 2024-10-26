@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="de">
 
+<!--Änderungen
+26.10.24 Amani
+- Titel Änderung 
+- Hinzufügen Button Margin Top vergrößert
+- Margin top von trans_type buttons vergrößert
+- Hinzufüge Button mit Pop Up versehen
+- Umbuchung als Button mit Pop Up gemacht => lieber Text der Seite ändern lassen? oder doch pop up?
+-->  
+
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neue Transaktion & Transaktionsübersicht</title>
+    <title>Neue Transaktion</title>
     <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css">
     <style>
         .badge-success {
@@ -21,6 +32,20 @@
             background-color: #f8f9fa;
             text-align: center;
         }
+
+        .btn-add {
+            margin-top: 20px;
+        }
+
+        .trans_btns .btn {
+        flex: 1; /* Gleiche Breite für alle Buttons */
+        height: 45px; /* Einheitliche Höhe für die Buttons */
+        border-radius: 8px; /* Keine abgerundeten Ecken für die Buttons */
+        padding: 10px 15px; /* Gleichmäßiges Padding (oben/unten und links/rechts) */
+        text-align: center; /* Text zentrieren */
+        width: 300px;
+        }   
+
     </style>
 </head>
 
@@ -31,17 +56,17 @@
     <div class="container mt-4">
         <h3>Neue Transaktion</h3>
 
-        <!-- Transaktion Typ Auswahl -->
-        <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+        <!-- Transaktion Typ Auswahl und Button für Umbuchung-->
+        <div class="btn-group btn-group-toggle mb-3 trans_btns" data-toggle="buttons">
             <label class="btn btn-outline-primary">
                 <input type="radio" name="trans_type" id="ausgabe" autocomplete="off"> Ausgabe
             </label>
-            <label class="btn btn-outline-primary">
+            <label class="btn btn-outline-primary einnahme">
                 <input type="radio" name="trans_type" id="einnahme" autocomplete="off"> Einnahme
             </label>
-            <label class="btn btn-outline-primary" data-toggle="modal" data-target="#umbuchungModal">
-                <input type="radio" name="trans_type" id="umbuchung" autocomplete="off"> Umbuchung
-            </label>
+            <button type="button" class="btn btn-outline-warning mb-3 btn-umbuchung" data-bs-toggle="modal" data-bs-target="#umbuchungModal">
+                Umbuchung
+            </button>
         </div>
 
         <!-- Formular für Transaktionsdetails -->
@@ -79,9 +104,80 @@
                 <input type="date" class="form-control" id="datum">
             </div>
 
-            <button type="submit" class="btn btn-primary">Hinzufügen</button>
+            <button type="button" class="btn btn-primary btn-add" data-bs-toggle="modal" data-bs-target="#hinzufuegenModal">
+                Hinzufügen
+            </button>
         </form>
     </div>
+
+    <!-- Modal für den Hinzufügen-Button -->
+    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hinzufuegenModalLabel">Transaktion wurde hinzugefügt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal für Umbuchung-Button-->
+    <div class="modal fade" id="umbuchungModal" tabindex="-1" aria-labelledby="umbuchungModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hinzufuegenModalLabel">Umbuchung</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="konto">Konto</label>
+                            <select class="form-control" id="konto1">
+                                <option>Bargeld</option>
+                                <option>Girokonto</option>
+                                <option>Kreditkarte</option>
+                            </select>
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="konto">Konto</label>
+                            <select class="form-control" id="konto2">
+                                <option>Bargeld</option>
+                                <option>Girokonto</option>
+                                <option>Kreditkarte</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="wert">Wert</label>
+                            <input type="number" class="form-control" id="wert" placeholder="0.00 €">
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="notiz">Notiz hinzufügen</label>
+                            <input type="text" class="form-control" id="notiz" placeholder="Optional">
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="datum">Datum</label>
+                            <input type="date" class="form-control" id="datum">
+                        </div>
+            
+                        <button type="button" class="btn btn-primary btn-add" data-bs-toggle="modal" data-bs-target="#hinzufuegenModal">
+                            Hinzufügen
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Footer -->
     <div id="footer-placeholder"></div>
