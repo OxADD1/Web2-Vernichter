@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.pdf filter=lfs diff=lfs merge=lfs -text
+Fullstack-Entwicklung[[:space:]]Das[[:space:]]Handbuch[[:space:]]für[[:space:]]Webentwickler.goodnotes.pdf filter=lfs diff=lfs merge=lfs -text

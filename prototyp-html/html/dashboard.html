@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startseite</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        /* Flex-Container für die Diagramme */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        canvas {
+            /* Flexibles Layout für Diagramme */
+            max-width: 100%;
+            height: auto;
+        }
+
+        .balance-amount, .total-expense-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .balance-amount {
+            color: #28a745;
+        }
+
+        .total-expense-amount {
+            color: #dc3545;
+        }
+
+        .balance-box, .total-expense-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .balance-expense-wrapper {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 450px; /* Maximale Breite für die Diagrammkarten */
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="container mt-4">
+        <!-- Kontostand und Ausgaben nebeneinander -->
+        <div class="balance-expense-wrapper">
+            <div class="balance-box">
+                <h4>Aktueller Kontostand</h4>
+                <p class="balance-amount">678,91 €</p>
+            </div>
+
+            <div class="total-expense-box">
+                <h4>Ausgaben nach Kategorien</h4>
+                <p class="total-expense-amount">-300 €</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Erstes Diagramm für Einnahmen und Ausgaben -->
+            <div class="col-md-6 d-flex flex-column align-items-center">
+                <div class="card chart-container">
+                    <div class="card-body">
+                        <canvas id="chart"></canvas>
+                        <p class="text-center mt-2">Einnahmen und Ausgaben</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zweites Diagramm für Kategorien -->
+            <div class="col-md-6 d-flex flex-column align-items-center">
+                <div class="card chart-container">
+                    <div class="card-body">
+                        <canvas id="categoryChart"></canvas>
+                        <p class="text-center mt-2">Kategorien</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Letzte 5 Transaktionen und ausklappbare Transaktionsliste -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h3>Letzten 5 Transaktionen</h3>
+                <div class="list-group mb-4">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 1</span>
+                        <span class="badge badge-success">+5€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 2</span>
+                        <span class="badge badge-danger">-78€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 3</span>
+                        <span class="badge badge-danger">-70€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 4</span>
+                        <span class="badge badge-success">+20€</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                        <span>Transaktion 5</span>
+                        <span class="badge badge-success">+200€</span>
+                    </button>
+                </div>
+
+                <!-- Ausklappbarer Button zur Anzeige aller Transaktionen -->
+                <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#allTransactions" aria-expanded="false" aria-controls="allTransactions">
+                    Alle Transaktionen anzeigen
+                </button>
+
+                <div class="collapse mt-3" id="allTransactions">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 6
+                            <span class="badge badge-danger">-50€</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 7
+                            <span class="badge badge-success">+100€</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 8
+                            <span class="badge badge-danger">-30€</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Transaktion 9
+                            <span class="badge badge-success">+500€</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Modal zum Bearbeiten oder Löschen von Transaktionen -->
+    <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTransactionModalLabel">Transaktion bearbeiten</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="editWert">Wert</label>
+                            <input type="number" class="form-control" id="editWert" placeholder="Wert">
+                        </div>
+                        <div class="form-group">
+                            <label for="editNotiz">Notiz</label>
+                            <input type="text" class="form-control" id="editNotiz" placeholder="Notiz">
+                        </div>
+                        <div class="form-group">
+                            <label for="editDatum">Datum</label>
+                            <input type="date" class="form-control" id="editDatum">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">Löschen</button>
+                    <button type="button" class="btn btn-primary">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../lib/jquery/jquery-3.7.0.min.js"></script>
+    <script type="text/javascript" src="../lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Navbar einbinden
+        fetch("navbar.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("navbar-placeholder").innerHTML = data;
+            });
+
+        // Footer einbinden
+        fetch("footer.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("footer-placeholder").innerHTML = data;
+            });
+
+        // Erstes Diagramm: Einnahmen und Ausgaben
+        var ctx = document.getElementById('chart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Einnahmen', 'Ausgaben'],
+                datasets: [{
+                    label: 'Finanzen',
+                    data: [300, 200],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true  // Verhindert, dass das Diagramm die Seite verlängert
+            }
+        });
+
+        // Zweites Diagramm: Ausgaben nach Kategorien
+        var ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        var categoryChart = new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lebensmittel', 'Miete', 'Freizeit'],
+                datasets: [{
+                    label: 'Kategorien',
+                    data: [150, 100, 50],
+                    backgroundColor: ['#007bff', '#ffc107', '#17a2b8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true  // Verhindert, dass das Diagramm die Seite verlängert
+            }
+        });
+    </script>
+</body>
+
+</html>

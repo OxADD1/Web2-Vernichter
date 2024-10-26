@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrierung</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4" style="width: 400px;">
+            <div class="card-body">
+                <h1 class="card-title text-center">Logo</h1>
+                <h2 class="text-center mb-4">Registrierung</h2>
+                <form id="registrationForm" action="#" method="post">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Passwort:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Passwort wiederholen:</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <p class="text-danger" id="error-message" style="display: none;">Die Passwörter stimmen nicht überein.</p>
+                    <button type="submit" class="btn btn-primary btn-block">Registrieren</button>
+                </form>
+                <p class="mt-4 text-center" id="success-message" style="display: none;">Sie haben sich erfolgreich registriert! Sie werden nun zum Login geführt.</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../lib/jquery/jquery-3.7.0.min.js"></script>
+    <script type="text/javascript" src="../lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+    <script>
+        // Formular absenden
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Verhindert das Standard-Formular-Absenden
+
+            // Passwörter überprüfen
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirm_password').value;
+
+            if (password !== confirmPassword) {
+                // Zeige Fehlermeldung an
+                document.getElementById('error-message').style.display = 'block';
+            } else {
+                // Verberge Fehlermeldung und zeige Erfolgsmeldung
+                document.getElementById('error-message').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+
+                // Weiterleitung zur Login-Seite nach 3 Sekunden
+                setTimeout(function() {
+                    window.location.href = 'login.html';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
