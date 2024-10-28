@@ -56,7 +56,7 @@
                 <div class="account-options">
                     <span class="balance-amount">25€</span>
                     <button class="btn btn-danger btn-sm">Löschen</button>
-                    <button class="btn btn-info btn-sm">Bearbeiten</button>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editKontoModal">Bearbeiten</button>
                 </div>
             </div>
 
@@ -66,7 +66,7 @@
                 <div class="account-options">
                     <span class="balance-amount">2500€</span>
                     <button class="btn btn-danger btn-sm">Löschen</button>
-                    <button class="btn btn-info btn-sm">Bearbeiten</button>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editKontoModal">Bearbeiten</button>
                 </div>
             </div>
         </div>
@@ -96,8 +96,39 @@
     <!-- Footer -->
     <div id="footer-placeholder"></div>
 
+    <!-- Bearbeiten Konto -->
+    <div class="modal fade" id="editKontoModal" tabindex="-1" role="dialog" aria-labelledby="editKontoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editKontoLabel">Konto bearbeiten</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="editKontoLabel">Kontoname</label>
+                            <input type="text" class="form-control" id="editKontoLabel" placeholder="Label">
+                        </div>
+                        <div class="form-group">
+                            <label for="editWert">Kontostand</label>
+                            <input type="number" class="form-control" id="editWert" placeholder="Wert">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skripte für Bootstrap und Chart.js -->
     <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
+    <script src="../lib/Chart/chart.js"></script>
     <script>
         // Navbar einbinden
         fetch("navbar.html")
