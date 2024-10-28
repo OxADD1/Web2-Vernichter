@@ -17,7 +17,6 @@
         }
 
         canvas {
-            /* Flexibles Layout für Diagramme */
             max-width: 100%;
             height: auto;
         }
@@ -50,7 +49,7 @@
 
         .card {
             width: 100%;
-            max-width: 450px; /* Maximale Breite für die Diagrammkarten */
+            max-width: 450px;
             margin: 0 auto;
         }
     </style>
@@ -74,8 +73,8 @@
             </div>
         </div>
 
+        <!-- Diagramme -->
         <div class="row">
-            <!-- Erstes Diagramm für Einnahmen und Ausgaben -->
             <div class="col-md-6 d-flex flex-column align-items-center">
                 <div class="card chart-container">
                     <div class="card-body">
@@ -84,8 +83,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Zweites Diagramm für Kategorien -->
             <div class="col-md-6 d-flex flex-column align-items-center">
                 <div class="card chart-container">
                     <div class="card-body">
@@ -96,66 +93,78 @@
             </div>
         </div>
 
-        <!-- Letzte 5 Transaktionen und ausklappbare Transaktionsliste -->
+        <!-- Filter für Transaktionszeitraum -->
+        <h3 class="mt-4">Transaktionen filtern</h3>
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <label for="startDate">Startdatum:</label>
+                <input type="date" id="startDate" class="form-control">
+            </div>
+            <div class="col-md-5">
+                <label for="endDate">Enddatum:</label>
+                <input type="date" id="endDate" class="form-control">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button id="filterBtn" class="btn btn-primary btn-block">Filtern</button>
+            </div>
+        </div>
+
+        <!-- Transaktionslisten -->
         <div class="row mt-4">
             <div class="col-md-12">
                 <h3>Letzten 5 Transaktionen</h3>
-                <div class="list-group mb-4">
-                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                <div class="list-group mb-4" id="recentTransactions">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-10-25">
                         <span>Transaktion 1</span>
                         <span class="badge badge-success">+5€</span>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-09-30">
                         <span>Transaktion 2</span>
                         <span class="badge badge-danger">-78€</span>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-09-15">
                         <span>Transaktion 3</span>
                         <span class="badge badge-danger">-70€</span>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-08-10">
                         <span>Transaktion 4</span>
                         <span class="badge badge-success">+20€</span>
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal">
+                    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-07-05">
                         <span>Transaktion 5</span>
                         <span class="badge badge-success">+200€</span>
                     </button>
                 </div>
 
-                <!-- Ausklappbarer Button zur Anzeige aller Transaktionen -->
+                <!-- Ausklappbare Transaktionsliste -->
                 <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#allTransactions" aria-expanded="false" aria-controls="allTransactions">
                     Alle Transaktionen anzeigen
                 </button>
-
                 <div class="collapse mt-3" id="allTransactions">
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Transaktion 6
+                    <div class="list-group" id="allTransactionList">
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-06-20">
+                            <span>Transaktion 6</span>
                             <span class="badge badge-danger">-50€</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Transaktion 7
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-05-15">
+                            <span>Transaktion 7</span>
                             <span class="badge badge-success">+100€</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Transaktion 8
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-04-10">
+                            <span>Transaktion 8</span>
                             <span class="badge badge-danger">-30€</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Transaktion 9
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-03-01">
+                            <span>Transaktion 9</span>
                             <span class="badge badge-success">+500€</span>
-                        </li>
-                    </ul>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div id="footer-placeholder"></div>
-
-    <!-- Modal zum Bearbeiten oder Löschen von Transaktionen -->
+    <!-- Modal für Transaktionsbearbeitung -->
     <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -189,25 +198,59 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Skripte für Bootstrap und Chart.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../lib/Chart/chart.js"></script>
+
+    <!-- Code zum Laden der Navbar -->
     <script>
-        // Navbar einbinden
-        fetch("navbar.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("navbar-placeholder").innerHTML = data;
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("navbar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("navbar-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden der Navbar:", error));
+        });
+    </script>
 
-        // Footer einbinden
-        fetch("footer.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("footer-placeholder").innerHTML = data;
-            });
+    <!-- Filterfunktion für Transaktionen -->
+    <script>
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
 
-        // Erstes Diagramm: Einnahmen und Ausgaben
+            // Prüfen, ob beide Daten vorhanden sind
+            if (startDateInput && endDateInput) {
+                const startDate = startDateInput;
+                const endDate = endDateInput;
+
+                const filterTransactions = (listId) => {
+                    const transactions = document.getElementById(listId).querySelectorAll('button[data-date]');
+                    transactions.forEach(transaction => {
+                        const transactionDate = transaction.getAttribute('data-date');
+                        
+                        // Vergleich als ISO-Datumstring im Format YYYY-MM-DD
+                        if (transactionDate >= startDate && transactionDate <= endDate) {
+                            transaction.style.display = 'flex';
+                        } else {
+                            transaction.style.display = 'none';
+                        }
+                    });
+                };
+
+                filterTransactions('recentTransactions');
+                filterTransactions('allTransactionList');
+            } else {
+                // Wenn keine Daten gesetzt sind, werden alle Transaktionen angezeigt
+                alert("Bitte wählen Sie ein gültiges Start- und Enddatum aus.");
+            }
+        });
+    </script>
+
+    <!-- Diagramme -->
+    <script>
         var ctx = document.getElementById('chart').getContext('2d');
         var chart = new Chart(ctx, {
             type: 'doughnut',
@@ -221,11 +264,10 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true  // Verhindert, dass das Diagramm die Seite verlängert
+                maintainAspectRatio: true
             }
         });
 
-        // Zweites Diagramm: Ausgaben nach Kategorien
         var ctxCategory = document.getElementById('categoryChart').getContext('2d');
         var categoryChart = new Chart(ctxCategory, {
             type: 'doughnut',
@@ -239,7 +281,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true  // Verhindert, dass das Diagramm die Seite verlängert
+                maintainAspectRatio: true
             }
         });
     </script>
