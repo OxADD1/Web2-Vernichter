@@ -191,8 +191,29 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">Löschen</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTransactionModal">Löschen</button>
                     <button type="button" class="btn btn-primary">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal zum Loeschen-->
+    <div class="modal fade" id="deleteTransactionModal" tabindex="-1" role="dialog" aria-labelledby="deleteTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteTransactionModalLabel">Transaktion löschen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Möchten Sie diese Transaktion endgültig löschen?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">Ja</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Nein</button>
                 </div>
             </div>
         </div>
@@ -246,6 +267,23 @@
                 // Wenn keine Daten gesetzt sind, werden alle Transaktionen angezeigt
                 alert("Bitte wählen Sie ein gültiges Start- und Enddatum aus.");
             }
+        });
+    </script>
+
+    <script>
+        // Eventlistener zum Schließen des Transaktionsbearbeitungsmodals und Öffnen des Löschmodals
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButton = document.querySelector('#editTransactionModal .btn-danger'); // Löschen-Button im Bearbeitungsmodal
+            
+            deleteButton.addEventListener('click', function() {
+                // Schließt das Bearbeitungsmodal
+                $('#editTransactionModal').modal('hide');
+        
+                // Öffnet das Löschmodal mit einer kurzen Verzögerung
+                setTimeout(() => {
+                    $('deleteTransactionModal').modal('show');
+                }, 300); // 300ms Verzögerung für bessere UI-Übergänge
+            });
         });
     </script>
 
