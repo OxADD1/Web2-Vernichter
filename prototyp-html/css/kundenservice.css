@@ -1,0 +1,18 @@
+.about-us-box {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.feedback-container {
+    max-width: 600px;
+    margin: 50px auto;
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.toggle-buttons label {
+    margin: 0 10px;
+}

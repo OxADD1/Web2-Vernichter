@@ -1,0 +1,12 @@
+.btn-add {
+    margin-top: 20px;
+}
+
+.trans_btns .btn {
+    flex: 1; /* Gleiche Breite für alle Buttons */
+    height: 45px; /* Einheitliche Höhe für die Buttons */
+    border-radius: 8px; /* Keine abgerundeten Ecken für die Buttons */
+    padding: 10px 15px; /* Gleichmäßiges Padding (oben/unten und links/rechts) */
+    text-align: center; /* Text zentrieren */
+    width: 300px;
+    }   

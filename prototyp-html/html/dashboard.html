@@ -6,53 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Startseite</title>
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
-    <style>
-        /* Flex-Container für die Diagramme */
-        .chart-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px auto;
-            max-width: 100%;
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .balance-amount, .total-expense-amount {
-            font-size: 2rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .balance-amount {
-            color: #28a745;
-        }
-
-        .total-expense-amount {
-            color: #dc3545;
-        }
-
-        .balance-box, .total-expense-box {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .balance-expense-wrapper {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 
 <body>
@@ -164,6 +119,9 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
     <!-- Modal für Transaktionsbearbeitung -->
     <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -233,6 +191,14 @@
                     document.getElementById("navbar-placeholder").innerHTML = data;
                 })
                 .catch(error => console.error("Fehler beim Laden der Navbar:", error));
+
+            // Footer einbinden
+            fetch("footer.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("footer-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden des Footers:", error));
         });
     </script>
 

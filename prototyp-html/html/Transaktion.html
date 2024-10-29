@@ -17,36 +17,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neue Transaktion</title>
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
-    <style>
-        .badge-success {
-            background-color: #28a745;
-        }
-
-        .badge-danger {
-            background-color: #dc3545;
-        }
-
-        footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            background-color: #f8f9fa;
-            text-align: center;
-        }
-
-        .btn-add {
-            margin-top: 20px;
-        }
-
-        .trans_btns .btn {
-        flex: 1; /* Gleiche Breite für alle Buttons */
-        height: 45px; /* Einheitliche Höhe für die Buttons */
-        border-radius: 8px; /* Keine abgerundeten Ecken für die Buttons */
-        padding: 10px 15px; /* Gleichmäßiges Padding (oben/unten und links/rechts) */
-        text-align: center; /* Text zentrieren */
-        width: 300px;
-        }   
-
-    </style>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/transaktion.css">
 </head>
 
 <body>
@@ -64,7 +36,7 @@
             <label class="btn btn-outline-primary einnahme">
                 <input type="radio" name="trans_type" id="einnahme" autocomplete="off"> Einnahme
             </label>
-            <button type="button" class="btn btn-outline-warning mb-3 btn-umbuchung" data-bs-toggle="modal" data-bs-target="#umbuchungModal">
+            <button type="button" class="btn btn-outline-warning mb-3 btn-umbuchung" data-toggle="modal" data-target="#umbuchungModal">
                 Umbuchung
             </button>
         </div>
@@ -104,7 +76,7 @@
                 <input type="date" class="form-control" id="datum">
             </div>
 
-            <button type="button" class="btn btn-primary btn-add" data-bs-toggle="modal" data-bs-target="#hinzufuegenModal">
+            <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#hinzufuegenModal">
                 Hinzufügen
             </button>
         </form>
@@ -116,7 +88,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="hinzufuegenModalLabel">Transaktion wurde hinzugefügt</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.
@@ -131,7 +105,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="hinzufuegenModalLabel">Umbuchung</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -186,19 +162,22 @@
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
 
     <script>
-        // Navbar einbinden
-        fetch("navbar.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("navbar-placeholder").innerHTML = data;
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("navbar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("navbar-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden der Navbar:", error));
 
-        // Footer einbinden
-        fetch("footer.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("footer-placeholder").innerHTML = data;
-            });
+            // Footer einbinden
+            fetch("footer.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("footer-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden des Footers:", error));
+        });
     </script>
 </body>
 

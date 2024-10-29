@@ -6,38 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontoverwaltung</title>
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
-    <style>
-        .balance-box {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .balance-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .account-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .account-options button {
-            margin-left: 10px;
-        }
-
-        .account-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .add-account-box {
-            margin-top: 30px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/kontoverwaltung.css">
 </head>
 
 <body>
@@ -152,19 +122,22 @@
     <script src="../lib/Chart/chart.js"></script>
 
     <script>
-        // Navbar einbinden
-        fetch("navbar.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("navbar-placeholder").innerHTML = data;
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("navbar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("navbar-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden der Navbar:", error));
 
-        // Footer einbinden
-        fetch("footer.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("footer-placeholder").innerHTML = data;
-            });
+            // Footer einbinden
+            fetch("footer.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("footer-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden des Footers:", error));
+        });
     </script>
 </body>
 

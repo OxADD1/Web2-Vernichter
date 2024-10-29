@@ -1,0 +1,39 @@
+/* Flex-Container für die Diagramme */
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 100%;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.balance-amount, .total-expense-amount {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+.balance-amount {
+    color: #28a745;
+}
+
+.total-expense-amount {
+    color: #dc3545;
+}
+
+.balance-expense-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+}

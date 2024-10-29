@@ -1,0 +1,19 @@
+.form-group label {
+    font-weight: bold;
+}
+
+.balance-box {
+    margin-bottom: 20px;
+    text-align: center;
+}
+.balance-box, .total-expense-box {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: #f8f9fa;
+    text-align: center;
+}
