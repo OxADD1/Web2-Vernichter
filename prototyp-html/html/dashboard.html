@@ -214,41 +214,7 @@
                 .catch(error => console.error("Fehler beim Laden der Navbar:", error));
         });
     </script>
-
-    <!-- Filterfunktion für Transaktionen -->
-    <script>
-        document.getElementById('filterBtn').addEventListener('click', function() {
-            const startDateInput = document.getElementById('startDate').value;
-            const endDateInput = document.getElementById('endDate').value;
-
-            // Prüfen, ob beide Daten vorhanden sind
-            if (startDateInput && endDateInput) {
-                const startDate = startDateInput;
-                const endDate = endDateInput;
-
-                const filterTransactions = (listId) => {
-                    const transactions = document.getElementById(listId).querySelectorAll('button[data-date]');
-                    transactions.forEach(transaction => {
-                        const transactionDate = transaction.getAttribute('data-date');
-                        
-                        // Vergleich als ISO-Datumstring im Format YYYY-MM-DD
-                        if (transactionDate >= startDate && transactionDate <= endDate) {
-                            transaction.style.display = 'flex';
-                        } else {
-                            transaction.style.display = 'none';
-                        }
-                    });
-                };
-
-                filterTransactions('recentTransactions');
-                filterTransactions('allTransactionList');
-            } else {
-                // Wenn keine Daten gesetzt sind, werden alle Transaktionen angezeigt
-                alert("Bitte wählen Sie ein gültiges Start- und Enddatum aus.");
-            }
-        });
-    </script>
-
+    
     <!-- Diagramme -->
     <script>
         var ctx = document.getElementById('chart').getContext('2d');
