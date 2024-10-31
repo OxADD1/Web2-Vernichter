@@ -1,0 +1,25 @@
+.balance-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+
+.add-account-box {
+    margin-top: 30px;
+}
+
+.account-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.account-options button {
+    margin-left: 10px;
+}
+
+.account-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}

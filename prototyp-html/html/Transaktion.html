@@ -10,43 +10,13 @@
 - Umbuchung als Button mit Pop Up gemacht => lieber Text der Seite ändern lassen? oder doch pop up?
 -->  
 
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neue Transaktion</title>
-    <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
-    <style>
-        .badge-success {
-            background-color: #28a745;
-        }
-
-        .badge-danger {
-            background-color: #dc3545;
-        }
-
-        footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            background-color: #f8f9fa;
-            text-align: center;
-        }
-
-        .btn-add {
-            margin-top: 20px;
-        }
-
-        .trans_btns .btn {
-        flex: 1; /* Gleiche Breite für alle Buttons */
-        height: 45px; /* Einheitliche Höhe für die Buttons */
-        border-radius: 8px; /* Keine abgerundeten Ecken für die Buttons */
-        padding: 10px 15px; /* Gleichmäßiges Padding (oben/unten und links/rechts) */
-        text-align: center; /* Text zentrieren */
-        width: 300px;
-        }   
-
-    </style>
+    <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css"> <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/transaktion.css">
 </head>
 
 <body>
@@ -111,12 +81,16 @@
     </div>
 
     <!-- Modal für den Hinzufügen-Button -->
-    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="hinzufuegenModalLabel">Transaktion wurde hinzugefügt</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
                 </div>
                 <div class="modal-body">
                     Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.
@@ -126,17 +100,21 @@
     </div>
 
     <!--Modal für Umbuchung-Button-->
-    <div class="modal fade" id="umbuchungModal" tabindex="-1" aria-labelledby="umbuchungModal" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade" id="umbuchungModal" tabindex="-1" role="dialog" aria-labelledby="umbuchungModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="hinzufuegenModalLabel">Umbuchung</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+
+                    <h5 class="modal-title" id="umbuchungModalLabel">Umbuchung</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="konto">Konto</label>
+                            <label for="konto1">Konto</label>
                             <select class="form-control" id="konto1">
                                 <option>Bargeld</option>
                                 <option>Girokonto</option>
@@ -145,7 +123,7 @@
                         </div>
             
                         <div class="form-group">
-                            <label for="konto">Konto</label>
+                            <label for="konto2">Konto</label>
                             <select class="form-control" id="konto2">
                                 <option>Bargeld</option>
                                 <option>Girokonto</option>
@@ -154,21 +132,22 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="wert">Wert</label>
-                            <input type="number" class="form-control" id="wert" placeholder="0.00 €">
+                            <label for="wertUmbuchung">Wert</label>
+                            <input type="number" class="form-control" id="wertUmbuchung" placeholder="0.00 €">
                         </div>
             
                         <div class="form-group">
-                            <label for="notiz">Notiz hinzufügen</label>
-                            <input type="text" class="form-control" id="notiz" placeholder="Optional">
+                            <label for="notizUmbuchung">Notiz hinzufügen</label>
+                            <input type="text" class="form-control" id="notizUmbuchung" placeholder="Optional">
                         </div>
             
                         <div class="form-group">
-                            <label for="datum">Datum</label>
-                            <input type="date" class="form-control" id="datum">
+                            <label for="datumUmbuchung">Datum</label>
+                            <input type="date" class="form-control" id="datumUmbuchung">
                         </div>
             
-                        <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#hinzufuegenModal">
+                        <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#hinzufuegenModal" data-dismiss="modal">
+
                             Hinzufügen
                         </button>
                     </form>
@@ -177,28 +156,29 @@
         </div>
     </div>
 
-
-
     <!-- Footer -->
     <div id="footer-placeholder"></div>
 
-    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
-    <script src="../lib/bootstrap/bootstrap.min.js"></script>
+    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script> <!-- jQuery -->
+    <script src="../lib/bootstrap/bootstrap.min.js"></script> <!-- Bootstrap 4 JS -->
 
     <script>
-        // Navbar einbinden
-        fetch("navbar.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("navbar-placeholder").innerHTML = data;
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("navbar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("navbar-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden der Navbar:", error));
 
-        // Footer einbinden
-        fetch("footer.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("footer-placeholder").innerHTML = data;
-            });
+            // Footer einbinden
+            fetch("footer.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("footer-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden des Footers:", error));
+        });
     </script>
 </body>
 

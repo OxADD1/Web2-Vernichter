@@ -6,38 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontoverwaltung</title>
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
-    <style>
-        .balance-box {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .balance-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .account-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .account-options button {
-            margin-left: 10px;
-        }
-
-        .account-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .add-account-box {
-            margin-top: 30px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/kontoverwaltung.css">
 </head>
 
 <body>
@@ -55,7 +25,9 @@
                 <span>Bargeld</span>
                 <div class="account-options">
                     <span class="balance-amount">25€</span>
-                    <button class="btn btn-danger btn-sm">Löschen</button>
+
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteKontoModal">Löschen</button>
+
                     <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editKontoModal">Bearbeiten</button>
                 </div>
             </div>
@@ -65,7 +37,9 @@
                 <span>Sparkasse</span>
                 <div class="account-options">
                     <span class="balance-amount">2500€</span>
-                    <button class="btn btn-danger btn-sm">Löschen</button>
+
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteKontoModal">Löschen</button>
+
                     <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editKontoModal">Bearbeiten</button>
                 </div>
             </div>
@@ -96,7 +70,9 @@
     <!-- Footer -->
     <div id="footer-placeholder"></div>
 
-    <!-- Bearbeiten Konto -->
+
+    <!--Modal Konto Bearbeiten -->
+
     <div class="modal fade" id="editKontoModal" tabindex="-1" role="dialog" aria-labelledby="editKontoLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -125,24 +101,51 @@
         </div>
     </div>
 
+
+    <!--Modal Konto loeschen-->
+    <div class="modal fade" id="deleteKontoModal" tabindex="-1" role="dialog" aria-labelledby="deleteKontoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteKontoModalLabel">Konto löschen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Möchten Sie dieses Konto endgültig löschen?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">Ja</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Nein</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Skripte für Bootstrap und Chart.js -->
     <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
     <script src="../lib/Chart/chart.js"></script>
-    <script>
-        // Navbar einbinden
-        fetch("navbar.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("navbar-placeholder").innerHTML = data;
-            });
 
-        // Footer einbinden
-        fetch("footer.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("footer-placeholder").innerHTML = data;
-            });
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("navbar.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("navbar-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden der Navbar:", error));
+
+            // Footer einbinden
+            fetch("footer.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("footer-placeholder").innerHTML = data;
+                })
+                .catch(error => console.error("Fehler beim Laden des Footers:", error));
+        });
     </script>
 </body>
 
