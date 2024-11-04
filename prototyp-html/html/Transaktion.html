@@ -7,8 +7,7 @@
 - Hinzufügen Button Margin Top vergrößert
 - Margin top von trans_type buttons vergrößert
 - Hinzufüge Button mit Pop Up versehen
-- Umbuchung als Button mit Pop Up gemacht => lieber Text der Seite ändern lassen? oder doch pop up?
--->  
+- Umbuchung als Formular ohne Pop Up gemacht -->  
 
 <head>
     <meta charset="UTF-8">
@@ -40,133 +39,99 @@
     <div class="container mt-4">
         <h3>Neue Transaktion</h3>
 
-        <!-- Transaktion Typ Auswahl und Button für Umbuchung-->
+        <!-- Transaktion Typ Auswahl -->
         <div class="btn-group btn-group-toggle mb-3 trans_btns" data-toggle="buttons">
             <label class="btn btn-outline-primary">
-                <input type="radio" name="trans_type" id="ausgabe" autocomplete="off"> Ausgabe
+                <input type="radio" name="trans_type" id="ausgabe" autocomplete="off" checked> Ausgabe
             </label>
             <label class="btn btn-outline-primary einnahme">
                 <input type="radio" name="trans_type" id="einnahme" autocomplete="off"> Einnahme
             </label>
-            <button type="button" class="btn btn-outline-warning mb-3 btn-umbuchung" data-toggle="modal" data-target="#umbuchungModal">
-                Umbuchung
-            </button>
+            <label class="btn btn-outline-warning">
+                <input type="radio" name="trans_type" id="umbuchung" autocomplete="off"> Umbuchung
+            </label>
         </div>
 
         <!-- Formular für Transaktionsdetails -->
-        <form>
-            <div class="form-group">
-                <label for="konto">Konto</label>
-                <select class="form-control" id="konto">
-                    <option>Bargeld</option>
-                    <option>Girokonto</option>
-                    <option>Kreditkarte</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="wert">Wert</label>
-                <input type="number" class="form-control" id="wert" placeholder="0.00 €">
-            </div>
-
-            <div class="form-group">
-                <label for="kategorie">Kategorie</label>
-                <select class="form-control" id="kategorie">
-                    <option>Lebensmittel</option>
-                    <option>Miete</option>
-                    <option>Freizeit</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="notiz">Notiz hinzufügen</label>
-                <input type="text" class="form-control" id="notiz" placeholder="Optional">
-            </div>
-
-            <div class="form-group">
-                <label for="datum">Datum</label>
-                <input type="date" class="form-control" id="datum">
-            </div>
-
-            <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#hinzufuegenModal">
-                Hinzufügen
-            </button>
-        </form>
-    </div>
-
-    <!-- Modal für den Hinzufügen-Button -->
-    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="hinzufuegenModalLabel">Transaktion wurde hinzugefügt</h5>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-
+        <div id="transaktionForm" class="container mt-4">
+            <h4>Transaktionsdetails</h4>
+            <form>
+                <div class="form-group">
+                    <label for="konto">Konto</label>
+                    <select class="form-control" id="konto">
+                        <option>Bargeld</option>
+                        <option>Girokonto</option>
+                        <option>Kreditkarte</option>
+                    </select>
                 </div>
-                <div class="modal-body">
-                    Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.
+
+                <div class="form-group">
+                    <label for="wert">Wert</label>
+                    <input type="number" class="form-control" id="wert" placeholder="0.00 €">
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label for="kategorie">Kategorie</label>
+                    <select class="form-control" id="kategorie">
+                        <option>Lebensmittel</option>
+                        <option>Miete</option>
+                        <option>Freizeit</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notiz">Notiz hinzufügen</label>
+                    <input type="text" class="form-control" id="notiz" placeholder="Optional">
+                </div>
+
+                <div class="form-group">
+                    <label for="datum">Datum</label>
+                    <input type="date" class="form-control" id="datum">
+                </div>
+
+                <button type="button" class="btn btn-primary btn-add" id="hinzufuegenBtn">Hinzufügen</button>
+            </form>
         </div>
-    </div>
 
-    <!--Modal für Umbuchung-Button-->
-    <div class="modal fade" id="umbuchungModal" tabindex="-1" role="dialog" aria-labelledby="umbuchungModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-
-                    <h5 class="modal-title" id="umbuchungModalHeadLine">Umbuchung</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-
+        <!-- Formular für Umbuchung anzeigen -->
+        <div id="umbuchungForm" class="container mt-4" style="display: none;">
+            <h4>Umbuchung</h4>
+            <form>
+                <div class="form-group">
+                    <label for="konto1">Von Konto</label>
+                    <select class="form-control" id="konto1">
+                        <option>Bargeld</option>
+                        <option>Girokonto</option>
+                        <option>Kreditkarte</option>
+                    </select>
                 </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="konto1">Konto</label>
-                            <select class="form-control" id="konto1">
-                                <option>Bargeld</option>
-                                <option>Girokonto</option>
-                                <option>Kreditkarte</option>
-                            </select>
-                        </div>
-            
-                        <div class="form-group">
-                            <label for="konto2">Konto</label>
-                            <select class="form-control" id="konto2">
-                                <option>Bargeld</option>
-                                <option>Girokonto</option>
-                                <option>Kreditkarte</option>
-                            </select>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="wertUmbuchung">Wert</label>
-                            <input type="number" class="form-control" id="wertUmbuchung" placeholder="0.00 €">
-                        </div>
-            
-                        <div class="form-group">
-                            <label for="notizUmbuchung">Notiz hinzufügen</label>
-                            <input type="text" class="form-control" id="notizUmbuchung" placeholder="Optional">
-                        </div>
-            
-                        <div class="form-group">
-                            <label for="datumUmbuchung">Datum</label>
-                            <input type="date" class="form-control" id="datumUmbuchung">
-                        </div>
-            
-                        <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#hinzufuegenModal" data-dismiss="modal">
-
-                            Hinzufügen
-                        </button>
-                    </form>
+                <div class="form-group">
+                    <label for="konto2">Zu Konto</label>
+                    <select class="form-control" id="konto2">
+                        <option>Bargeld</option>
+                        <option>Girokonto</option>
+                        <option>Kreditkarte</option>
+                    </select>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label for="wertUmbuchung">Wert</label>
+                    <input type="number" class="form-control" id="wertUmbuchung" placeholder="0.00 €">
+                </div>
+
+                <div class="form-group">
+                    <label for="notizUmbuchung">Notiz hinzufügen</label>
+                    <input type="text" class="form-control" id="notizUmbuchung" placeholder="Optional">
+                </div>
+
+                <div class="form-group">
+                    <label for="datumUmbuchung">Datum</label>
+                    <input type="date" class="form-control" id="datumUmbuchung">
+                </div>
+
+                <button type="button" class="btn btn-primary btn-add" id="umbuchungBtn">Umbuchung hinzufügen</button>
+            </form>
         </div>
     </div>
 
@@ -177,7 +142,32 @@
 
     <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script> <!-- jQuery -->
     <script src="../lib/bootstrap/bootstrap.min.js"></script> <!-- Bootstrap 4 JS -->
+    <script>
+        // JavaScript zur Anzeige des entsprechenden Formulars
+        document.getElementById('umbuchung').addEventListener('click', function() {
+            document.getElementById('transaktionForm').style.display = 'none';
+            document.getElementById('umbuchungForm').style.display = 'block';
+        });
 
+        document.getElementById('ausgabe').addEventListener('click', function() {
+            document.getElementById('umbuchungForm').style.display = 'none';
+            document.getElementById('transaktionForm').style.display = 'block';
+        });
+
+        document.getElementById('einnahme').addEventListener('click', function() {
+            document.getElementById('umbuchungForm').style.display = 'none';
+            document.getElementById('transaktionForm').style.display = 'block';
+        });
+
+        // Hinzufügen Button - Beispielaktion
+        document.getElementById('hinzufuegenBtn').addEventListener('click', function() {
+            alert('Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.');
+        });
+
+        document.getElementById('umbuchungBtn').addEventListener('click', function() {
+            alert('Die Umbuchung wurde erfolgreich durchgeführt.');
+        });
+    </script>
 </body>
 
 </html>
