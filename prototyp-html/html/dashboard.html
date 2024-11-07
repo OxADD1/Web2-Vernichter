@@ -166,8 +166,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTransactionModal">Löschen</button>
-                    <button type="button" class="btn btn-primary" onclick="validateForm()">Speichern</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTransactionModal" data-dismiss="modal">Löschen</button>
+                    <button type="button" class="btn btn-primary" onclick="validateForm()" data-dismiss="modal">Speichern</button>
                 </div>
             </div>
         </div>
@@ -189,6 +189,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger">Ja</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Nein</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal für den Speichern-Button -->
+    <div class="modal fade" id="speichernModal" tabindex="-1" role="dialog" aria-labelledby="speichernModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="speichernLabel">Transaktion bearbeiten</h5>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    Deine Transaktion wurde soeben erfolgreich bearbeitet.
                 </div>
             </div>
         </div>
@@ -276,7 +295,7 @@
                 alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
             } else {
                 // Wenn die Eingabe korrekt ist, öffne das Hinzufügen-Modal
-                $('#hinzufuegenModal').modal('show');
+                $('#speichernModal').modal('show');
             }
         }
     </script>
