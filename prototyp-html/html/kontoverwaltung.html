@@ -73,9 +73,10 @@
                     </div>
                     <div class="form-group">
                         <label for="accountBalance">Kontostand</label>
-                        <input type="number" class="form-control" id="accountBalance" placeholder="Kontostand" step="0.01">
+                        <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                        <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
                     </div>
-                    <button type="submit" class="btn btn-success btn-block">Konto hinzufügen</button>
+                    <button type="submit" class="btn btn-success btn-block" onclick="validateForm()">Konto hinzufügen</button>
                 </form>
             </div>
         </div>
@@ -106,12 +107,13 @@
                         </div>
                         <div class="form-group">
                             <label for="editWert">Kontostand</label>
-                            <input type="number" class="form-control" id="editWert" placeholder="Wert" step="0.01">
+                            <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                            <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Speichern</button>
+                    <button type="button" class="btn btn-primary" onclick="validateForm()">Speichern</button>
                 </div>
             </div>
         </div>
@@ -144,6 +146,50 @@
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
     <script src="../lib/Chart/chart.js"></script>
 
+    <!-- JavaScript zur Validierung des Eingabefeldes -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const wertInput = document.getElementById('wert');
+            const errorMessage = document.getElementById('error-message');
+
+            wertInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+
+                // Überprüfe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
+                if (!/^\d*\.?\d{0,2}$/.test(value)) {
+                    e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
+                }
+
+                // Zeige eine Fehlermeldung an, wenn der Wert ungültig ist
+                if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                    wertInput.classList.remove('invalid-input');
+                    errorMessage.style.display = 'none';
+                } else {
+                    wertInput.classList.add('invalid-input');
+                    errorMessage.style.display = 'block';
+                }
+            });
+
+            wertInput.addEventListener('keydown', function(e) {
+                // Verhindern, dass mehr als ein Dezimalpunkt eingegeben wird
+                if (e.key === '.' && wertInput.value.includes('.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function validateForm() {
+            const wert = document.getElementById('wert').value;
+            const regex = /^\d+(\.\d{1,2})?$/;
+
+            if (!regex.test(wert)) {
+                alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
+            } else {
+                // Wenn die Eingabe korrekt ist, öffne das Hinzufügen-Modal
+                $('#hinzufuegenModal').modal('show');
+            }
+        }
+    </script>
 </body>
 
 </html>

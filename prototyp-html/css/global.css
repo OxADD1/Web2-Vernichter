@@ -17,3 +17,12 @@ footer {
     background-color: #f8f9fa;
     text-align: center;
 }
+
+/*Fuer Wert Validierung*/
+.invalid-input {
+    border: 2px solid red;
+}
+.error-message {
+    color: red;
+    font-size: 0.9em;
+}
