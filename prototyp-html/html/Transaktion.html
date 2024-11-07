@@ -118,12 +118,12 @@
             wertInput.addEventListener('input', function(e) {
                 let value = e.target.value;
 
-                // Überprüfe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
+                // Ueberpruefe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
                 if (!/^\d*\.?\d{0,2}$/.test(value)) {
                     e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
                 }
 
-                // Zeige eine Fehlermeldung an, wenn der Wert ungültig ist
+                // Zeige eine Fehlermeldung an, wenn der Wert ungueltig ist
                 if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
                     wertInput.classList.remove('invalid-input');
                     errorMessage.style.display = 'none';
@@ -148,7 +148,7 @@
             if (!regex.test(wert)) {
                 alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
             } else {
-                // Wenn die Eingabe korrekt ist, öffne das Hinzufügen-Modal
+                // Wenn die Eingabe korrekt ist, oeffne das Hinzufuegen-Modal
                 $('#hinzufuegenModal').modal('show');
             }
         }
