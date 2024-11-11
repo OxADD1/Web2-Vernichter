@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 
-<!--Änderungen
-26.10.24 Amani
-- Titel Änderung 
-- Hinzufügen Button Margin Top vergrößert
-- Margin top von trans_type buttons vergrößert
-- Hinzufüge Button mit Pop Up versehen
-- Umbuchung als Formular ohne Pop Up gemacht -->  
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,22 +45,54 @@
         </div>
 
         <!-- Formular für Transaktionsdetails -->
-        <div id="transaktionForm" class="container mt-4">
-            <h4>Transaktionsdetails</h4>
-            <form>
-                <div class="form-group">
-                    <label for="konto">Konto</label>
-                    <select class="form-control" id="konto">
-                        <option>Bargeld</option>
-                        <option>Girokonto</option>
-                        <option>Kreditkarte</option>
-                    </select>
-                </div>
+        <form>
+            <div class="form-group">
+                <label for="konto">Konto</label>
+                <select class="form-control" id="konto">
+                    <option>Bargeld</option>
+                    <option>Girokonto</option>
+                    <option>Kreditkarte</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="wert">Wert</label>
-                    <input type="number" class="form-control" id="wert" placeholder="0.00 €">
-                </div>
+            <div class="form-group">
+                <label for="wert">Wert</label>
+                <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="kategorie">Kategorie</label>
+                <select class="form-control" id="kategorie">
+                    <option>Lebensmittel</option>
+                    <option>Miete</option>
+                    <option>Freizeit</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notiz">Notiz hinzufügen</label>
+                <input type="text" class="form-control" id="notiz" placeholder="Optional">
+            </div>
+
+            <div class="form-group">
+                <label for="datum">Datum</label>
+                <input type="date" class="form-control" id="datum">
+            </div>
+
+            <button type="button" class="btn btn-primary btn-add" onclick="validateForm()">
+                Hinzufügen
+            </button>
+        </form>
+    </div>
+
+    <!-- Modal für den Hinzufuegen-Button -->
+    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hinzufuegenModalLabel">Transaktion wurde hinzugefügt</h5>
+
 
                 <div class="form-group">
                     <label for="kategorie">Kategorie</label>
@@ -166,7 +190,53 @@
         document.getElementById('umbuchungBtn').addEventListener('click', function() {
             alert('Die Umbuchung wurde erfolgreich durchgeführt.');
         });
-    </script>
+    </script> 
+    <!-- JavaScript zur Validierung des Eingabefeldes -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const wertInput = document.getElementById('wert');
+            const errorMessage = document.getElementById('error-message');
+
+            wertInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+
+                // Ueberpruefe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
+                if (!/^\d*\.?\d{0,2}$/.test(value)) {
+                    e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
+                }
+
+                // Zeige eine Fehlermeldung an, wenn der Wert ungueltig ist
+                if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                    wertInput.classList.remove('invalid-input');
+                    errorMessage.style.display = 'none';
+                } else {
+                    wertInput.classList.add('invalid-input');
+                    errorMessage.style.display = 'block';
+                }
+            });
+
+            wertInput.addEventListener('keydown', function(e) {
+                // Verhindern, dass mehr als ein Dezimalpunkt eingegeben wird
+                if (e.key === '.' && wertInput.value.includes('.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function validateForm() {
+            const wert = document.getElementById('wert').value;
+            const regex = /^\d+(\.\d{1,2})?$/;
+
+            if (!regex.test(wert)) {
+                alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
+            } else {
+                // Wenn die Eingabe korrekt ist, oeffne das Hinzufuegen-Modal
+                $('#hinzufuegenModal').modal('show');
+            }
+        }
+    </script>  
+
+    
 </body>
 
 </html>
