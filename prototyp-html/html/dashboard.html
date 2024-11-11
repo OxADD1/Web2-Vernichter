@@ -96,6 +96,7 @@
                 <div class="list-group mb-4" id="recentTransactions">
                     <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-10-25">
                         <span>Transaktion 1</span>
+
                         <span class="badge badge-success">+5,00€</span>
                     </button>
                     <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-09-30">
@@ -124,19 +125,20 @@
                     <div class="list-group" id="allTransactionList">
                         <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-06-20">
                             <span>Transaktion 6</span>
-                            <span class="badge badge-danger">-50,00€</span>
+
+                            <span class="badge badge-danger">-50,00 €</span>
                         </button>
                         <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-05-15">
                             <span>Transaktion 7</span>
-                            <span class="badge badge-success">+100,00€</span>
+                            <span class="badge badge-success">+100,00 €</span>
                         </button>
                         <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-04-10">
                             <span>Transaktion 8</span>
-                            <span class="badge badge-danger">-30,00€</span>
+                            <span class="badge badge-danger">-30,00 €</span>
                         </button>
                         <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-toggle="modal" data-target="#editTransactionModal" data-date="2024-03-01">
                             <span>Transaktion 9</span>
-                            <span class="badge badge-success">+500,00€</span>
+                            <span class="badge badge-success">+500,00 €</span>
                         </button>
                     </div>
                 </div>
@@ -150,44 +152,36 @@
     </footer>
 
     <!-- Modal für Transaktionsbearbeitung -->
-<div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editTransactionModalHeadLine">Transaktion bearbeiten</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="editWert">Wert</label>
-                        <input type="number" class="form-control" id="editWert" placeholder="Wert">
-                    </div>
-                    <div class="form-group">
-                        <label for="editNotiz">Notiz</label>
-                        <input type="text" class="form-control" id="editNotiz" placeholder="Notiz">
-                    </div>
-                    <div class="form-group">
-                        <label for="editDatum">Datum</label>
-                        <input type="date" class="form-control" id="editDatum">
-                    </div>
-                    <div class="form-group">
-                        <label for="editKategorie">Kategorie</label>
-                        <select class="form-control" id="editKategorie">
-                            <option value="Transport">Transport</option>
-                            <option value="Bildung">Bildung</option>
-                            <option value="Miete">Miete</option>
-                            <option value="Lebensmittel">Lebensmittel</option>
-                            <option value="Sonstiges">Sonstiges</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTransactionModal" data-dismiss="modal">Löschen</button>
-                <button type="button" class="btn btn-primary">Speichern</button>
+    <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTransactionModalLabel">Transaktion bearbeiten</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="editWert">Wert</label>
+                            <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                            <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="editNotiz">Notiz</label>
+                            <input type="text" class="form-control" id="editNotiz" placeholder="Notiz">
+                        </div>
+                        <div class="form-group">
+                            <label for="editDatum">Datum</label>
+                            <input type="date" class="form-control" id="editDatum">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTransactionModal" data-dismiss="modal">Löschen</button>
+                    <button type="button" class="btn btn-primary" onclick="validateForm()" data-dismiss="modal">Speichern</button>
+                </div>
             </div>
         </div>
     </div>
@@ -215,6 +209,25 @@
         </div>
     </div>
 
+    <!-- Modal für den Speichern-Button -->
+    <div class="modal fade" id="speichernModal" tabindex="-1" role="dialog" aria-labelledby="speichernModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="speichernLabel">Transaktion bearbeiten</h5>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    Deine Transaktion wurde soeben erfolgreich bearbeitet.
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Skripte für Bootstrap und Chart.js -->
     <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
@@ -229,7 +242,9 @@
                 labels: ['Einnahmen', 'Ausgaben'],
                 datasets: [{
                     label: 'Finanzen',
+
                     data: [300.46, 200.84],
+
                     backgroundColor: ['#28a745', '#dc3545']
                 }]
             },
@@ -246,7 +261,9 @@
                 labels: ['Lebensmittel', 'Miete', 'Freizeit'],
                 datasets: [{
                     label: 'Kategorien',
-                    data: [150.58, 100.94, 50.37],
+
+                    data: [150.59, 100.43, 50.44],
+
                     backgroundColor: ['#007bff', '#ffc107', '#17a2b8']
                 }]
             },
@@ -255,6 +272,51 @@
                 maintainAspectRatio: true
             }
         });
+    </script>
+
+    <!-- JavaScript zur Validierung des Eingabefeldes -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const wertInput = document.getElementById('wert');
+            const errorMessage = document.getElementById('error-message');
+
+            wertInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+
+                // Ueberprüfe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
+                if (!/^\d*\.?\d{0,2}$/.test(value)) {
+                    e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
+                }
+
+                // Zeige eine Fehlermeldung an, wenn der Wert ungueltig ist
+                if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                    wertInput.classList.remove('invalid-input');
+                    errorMessage.style.display = 'none';
+                } else {
+                    wertInput.classList.add('invalid-input');
+                    errorMessage.style.display = 'block';
+                }
+            });
+
+            wertInput.addEventListener('keydown', function(e) {
+                // Verhindern, dass mehr als ein Dezimalpunkt eingegeben wird
+                if (e.key === '.' && wertInput.value.includes('.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function validateForm() {
+            const wert = document.getElementById('wert').value;
+            const regex = /^\d+(\.\d{1,2})?$/;
+
+            if (!regex.test(wert)) {
+                alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
+            } else {
+                // Wenn die Eingabe korrekt ist, oeffne das Speichern-Modal
+                $('#speichernModal').modal('show');
+            }
+        }
     </script>
 </body>
 
