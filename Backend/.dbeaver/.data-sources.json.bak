@@ -1,0 +1,35 @@
+{
+	"folders": {},
+	"connections": {
+		"sqlite_jdbc-1932a085aa4-53170cdd23ae2331": {
+			"provider": "sqlite",
+			"driver": "sqlite_jdbc",
+			"name": "webanw2.sqlite",
+			"save-password": true,
+			"configuration": {
+				"database": "C:\\Users\\timko\\Documents\\Semester\\4.Semester\\Web2\\Praktikum\\Projekt\\Web2-Vernichter\\Backend\\sql\\webanw2.sqlite",
+				"url": "jdbc:sqlite:C:\\Users\\timko\\Documents\\Semester\\4.Semester\\Web2\\Praktikum\\Projekt\\Web2-Vernichter\\Backend\\sql\\webanw2.sqlite",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": true,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800,
+			"auto-close-connections": true,
+			"close-connections-period": 14400
+		}
+	}
+}
