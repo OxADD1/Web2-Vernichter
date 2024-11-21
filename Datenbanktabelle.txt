@@ -1,0 +1,102 @@
+Datenbanktabelle
+
+1. Was muss die Anwendung tun?
+	-> Benutzer, Konto, Einnahmen, Ausgaben, Kategorien
+
+2. Was sind die Dinge, die gespeichert werden müssen? (Entitäten)
+ Jedes Attribut der Entität wird eine Spalte in der Tabelle sein
+
+Primärschlüssel identifiziert eindeutigen Datensatz in einer Tabelle.
+Fremdschlüssel verweist auf Primärschlüssel einer anderen Tabelle und stellt eine Beziehung zwischen Tabellen her.  
+
+
+
+
+TABLE Benutzer (
+id PRIMARY KEY
+name 
+email UNIQUE
+passwort
+)
+
+TABLE Konto (
+id PRIMARY KEY
+benutzer_id 
+kontoname
+kontostand
+iban UNIQUE	
+FOREIGN KEY benutzer_id
+)
+
+TABLE Transaktionen (
+id PRIMARY KEY
+konto_id
+betrag
+notiz
+datum
+kategorie
+typ (Einnahme oder Ausgabe oder umbuchung)
+FOREIGN KEY konto_id
+)
+
+# Wie Umbuchung?
+
+
+Kategorien: Lebenshaltungskosten, Wohnen, Freizeit, Transport, Sparen
+
+------------ Adrian
+
+Bankaccount klasse :
+Balance : Double 
+Color : String ( hex String )
+Icon : String 
+Name : String unique
+Relationship zu Transaktion : 1 bsnkaccount kann viele Transaktionen haben
+
+Klasse category:
+Name: String unique
+Icon : String 
+Color : String ( hex String)
+Relationship zu Transaktion: 1 categorie kann viele Transaktionen haben
+
+Klasse Transaction:
+Amount: Double
+Date: Date
+IsRepeating: Boolean
+Name: String
+Type: String ( aus einem enum: Ausgabe, Einnahme, Umbuchung )
+Id : UUID 
+Relationship zu Bank, category : eine Transaktion gehört zu 1 Account , category
+
+
+
+-----------------
+
+1. Welche zwei interaktiven Sachen?
+	-> Konto anlegen und Benutzer anlegen
+
+2. JS/Jquery, REst Schnittstelle auf expressserver, daten senden, Speicherung in Datenbank
+	-> 
+
+3. Empfehlung: Datenbank komplett fertig haben
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
