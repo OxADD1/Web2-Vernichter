@@ -27,12 +27,12 @@ INSERT INTO Kategorie (name) VALUES
 ('Sonstiges');
 
 CREATE TABLE Kundenservice (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  typ TEXT NOT NULL,
-  anrede TEXT NOT NULL,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-   nachricht TEXT NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    typ TEXT NOT NULL,
+    anrede TEXT NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    nachricht TEXT NOT NULL
 );
 
 CREATE TABLE Transaktion (
