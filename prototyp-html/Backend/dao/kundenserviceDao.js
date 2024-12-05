@@ -11,12 +11,7 @@ class KundenserviceDao {
     }
 
 
-    create(typ, anrede, name, email, nachricht) {
-        // Überprüfen, ob alle Parameter korrekt übergeben wurden
-        if (helper.isNull(typ) || helper.isNull(anrede) || helper.isNull(name) || helper.isNull(email) || helper.isNull(nachricht)) {
-            throw new Error('Ungültige Eingabedaten: Alle Felder müssen ausgefüllt sein.');
-        }
-
+    create(typ, anrede, name, email, nachricht) {      
         // SQL-Befehl zum Einfügen eines neuen Eintrags in die Tabelle
         var sql = `
             INSERT INTO Kundenservice (typ, anrede, name, email, nachricht)

@@ -17,8 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('email').value.trim();
         const nachricht = document.getElementById('nachricht').value.trim();
 
+        const validateEmail = (email) => {
+            return String(email)
+              .toLowerCase()
+              .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              );
+        };
+
         // Eingabedaten validieren
-        if (!name || !email || !nachricht) {
+        if ( name.length==0 || validateEmail(email) || !nachricht) {
             alert('Bitte füllen Sie alle Pflichtfelder aus.');
             return;
         }
@@ -39,13 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    typ: type, // 'feedback' oder 'problem'
-                    anrede: anrede,    // z.B. 'Herr' oder 'Frau'
-                    name: name,        // Eingabe aus dem Formular
-                    email: email,      // Eingabe aus dem Formular
-                    nachricht: nachricht // Eingabe aus dem Formular
-                })
+                body: JSON.stringify(data)
             });
             
 
