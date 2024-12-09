@@ -1,3 +1,5 @@
+const { method } = require("lodash");
+
 document.addEventListener('DOMContentLoaded', () => {
     // Formular im DOM auswählen
     const form = document.querySelector('.feedback-container form');
@@ -39,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             email: email,
             nachricht: nachricht
         };
-
+        /*
         try {
             // AJAX-Request: Daten an das Backend senden
             const response = await fetch('http://localhost:8000/api/kundenservice', {
@@ -63,6 +65,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Netzwerkfehler:', error);
             alert('Es gab ein Problem mit der Verbindung zum Server. Bitte versuchen Sie es später erneut.');
-        }
+        }*/
+
+        $.ajax({
+            url: 'http://localhost:8000/api/kundenservice',
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(data)
+        }).done(function (response) {
+            if (response.ok) {
+                alert(`Vielen Dank für Ihr Feedback! Ihre ID ist: ${result.id}`);
+                form.reset(); // Formular zurücksetzen
+            } else {
+                alert(`Fehler: ${error.nachricht}`);
+            }
+        }).fail(function (jqXHR, statusText, error) {
+            console.log('Token is invalid -> jump to login page');
+            console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+        });
     });
 });
