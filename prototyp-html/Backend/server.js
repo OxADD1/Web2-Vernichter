@@ -4,7 +4,7 @@
 // Finance - Planer
 // von Amani, Tim , Evelin , Adrian
  
- 
+    
 const helper = require('./helper.js');
 const fileHelper = require('./fileHelper.js');
 console.log('Starting server...');
@@ -55,9 +55,15 @@ try {
     const TOPLEVELPATH = '/api';
     console.log('Binding enpoints, top level Path at ' + TOPLEVELPATH);
     
-    var serviceRouter = require('./services/kundenservice.js');
+    var serviceRouter = require('./services/kundenserviceService.js');
     app.use(TOPLEVELPATH, serviceRouter);
  
+    serviceRouter = require('./services/benutzer.js');
+    app.use(TOPLEVELPATH, serviceRouter);
+
+    serviceRouter = require('./services/transaktion.js');
+    app.use(TOPLEVELPATH, serviceRouter);
+
     
     // send default error message if no matching endpoint found
     app.use(function (request, response) {

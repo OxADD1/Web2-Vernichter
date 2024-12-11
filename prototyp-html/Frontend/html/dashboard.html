@@ -8,7 +8,16 @@
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/dashboard.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="../js/sessionHandling.js"></script>
+    <script src="../js/token.js"></script>
+    <script src="../lib/bootstrap/bootstrap.min.js"></script>
+    <script src="../lib/Chart/chart.js"></script>
 </head>
+
+<script>
+    validateTokenExistence();
+</script>
 
 <body>
     <!-- Navbar -->
@@ -23,7 +32,7 @@
                 <li class="nav-item"><a class="nav-link" href="./transaktion.html">Neue Buchung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
-                <li class="nav-item"><a class="nav-link" href="../index.html">Logout</a></li>
+                <li class="nav-item"><a id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
             </ul>
         </div>
     </nav>
@@ -240,10 +249,7 @@
         </div>
     </div>
 
-    <!-- Skripte für Bootstrap und Chart.js -->
-    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
-    <script src="../lib/bootstrap/bootstrap.min.js"></script>
-    <script src="../lib/Chart/chart.js"></script>
+
   
     <!-- Diagramme -->
     <script>
@@ -329,6 +335,32 @@
                 $('#speichernModal').modal('show');
             }
         }
+
+        $(document).ready(function() {
+
+            $.ajax({
+                url: 'http://localhost:8000/api/transaktion/vonBenutzer',
+                method: 'get',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+                headers: getAuthorizationObject()
+            }).done(function (response) {
+                console.log('Received response', response);
+
+                // TODO nun können hier die empfangenen Daten als dyn. HTML ausgegeben werden
+            }).fail(function (jqXHR, statusText, error) {
+                // if token validation failed, jump to login
+                if (jqXHR.status == 401) {
+                    console.log('Token validation failed');
+                    jumpToLogin();
+                } else {
+                    // normal error handling
+                    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                    alert('Es ist ein Fehler aufgetreten');
+                }
+            });
+        });
     </script>
 </body>
 

@@ -7,7 +7,13 @@
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/impressum.css">
+    <script href="../js/logout.js"></script>
 </head>
+
+<script>
+    validateTokenExistence();
+</script>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -21,7 +27,7 @@
                 <li class="nav-item"><a class="nav-link" href="./transaktion.html">Neue Buchung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
-                <li class="nav-item"><a class="nav-link" href="../index.html">Logout</a></li>
+                <li class="nav-item"><a  id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
             </ul>
         </div>
     </nav>

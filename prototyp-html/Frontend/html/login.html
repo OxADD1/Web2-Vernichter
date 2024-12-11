@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="../js/sessionHandling.js"></script>
+    <script src="../js/token.js"></script>
+    <script src="../js/md5.min.js"></script>
+    <script src="../lib/bootstrap/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
+    
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center vh-100">
@@ -12,22 +18,79 @@
             <div class="card-body">
                 <h1 class="card-title text-center">Logo</h1>
                 <h2 class="text-center mb-4">Login</h2>
-                <form action="dashboard.html" method="get">
+                <form id="loginForm">
                     <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="userName">Username:</label>
+                        <input type="text" class="form-control" id="userName" name="username" required>
                     </div>
                     <div class="form-group">
-                        <label for="password">Passwort:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="passWord">Passwort:</label>
+                        <input type="password" class="form-control" id="passWord" name="password" required>
                     </div>
+                    <div id="errorArea"></div>
                     <button type="submit" class="btn btn-primary btn-block">Login</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
-    <script src="../lib/bootstrap/bootstrap.min.js"></script>
+    <script>
+
+            $(document).ready(function() {
+                $('#userName').keydown(clearErrorArea);
+                $('#passWord').keydown(clearErrorArea);
+
+                $('#loginForm').submit(function(form) {
+                    form.preventDefault();
+
+                    // get data from form and clanup with trim
+                    var un = $('#userName').val().trim();
+                    var pw = $('#passWord').val().trim();
+
+                    // check if data missing
+                    if (un.length == 0) {
+                        $('#errorArea').html('Login fehlerhaft, bitte geben Sie den Benutzernamen ein');
+                        return;
+                    }
+                    if (pw.length == 0) {
+                        $('#errorArea').html('Login fehlerhaft, bitte geben Sie das Passwort ein');
+                        return;
+                    }
+
+                    // hash password with md5
+                    var pwHash = md5(pw);
+                    console.log('formular ausgelöst', un, pw, pwHash);
+
+                    // create payload to send via ajax request
+                    var payload = { 'credentials-username': un, 'credentials-password': pwHash };
+
+                    $.ajax({
+                        url: 'http://localhost:8000/api/benutzer/check',
+                        method: 'get',
+                        contentType: 'application/json; charset=utf-8',
+                        cache: false,
+                        dataType: 'json',
+                        headers: payload
+                    }).done(function (response) {
+                        console.log('received Response', response);
+
+                        // login ok, setting session var with token
+                        saveToken(response);
+
+                        // jump to profile page
+                        location.href = 'dashboard.html';
+
+                    }).fail(function (jqXHR, statusText, error) {
+                        console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                        $('#errorArea').html('Login fehlerhaft, bitte versuchen Sie es erneut!');
+                    });
+                });
+            });
+
+            function clearErrorArea() {
+                $('#errorArea').empty();
+            }
+        
+        </script>
 </body>
 </html>

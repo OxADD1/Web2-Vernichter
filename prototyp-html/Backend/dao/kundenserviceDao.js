@@ -10,7 +10,6 @@ class KundenserviceDao {
         return this._conn;
     }
 
-
     create(typ, anrede, name, email, nachricht) {      
         // SQL-Befehl zum Einfügen eines neuen Eintrags in die Tabelle
         var sql = `

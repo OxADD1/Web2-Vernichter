@@ -1,6 +1,4 @@
 const helper = require('../helper.js');
-const BenutzerrolleDao = require('./benutzerrolleDao.js');
-const PersonDao = require('./personDao.js');
 
 class BenutzerDao {
 
@@ -12,10 +10,9 @@ class BenutzerDao {
         return this._conn;
     }
 
+    // Kann man vllt löschen oder wichtig für Token und Login?
     loadById(id) {
-        const benutzerrolleDao = new BenutzerrolleDao(this._conn);
-        const personDao = new PersonDao(this._conn);
-
+        //Benutzerobjekt noch email und passwort hinzufügen?
         var sql = 'SELECT * FROM Benutzer WHERE id=?';
         var statement = this._conn.prepare(sql);
         var result = statement.get(id);
@@ -23,23 +20,11 @@ class BenutzerDao {
         if (helper.isUndefined(result)) 
             throw new Error('No Record found by id=' + id);
 
-        result.benutzerrolle = benutzerrolleDao.loadById(result.benutzerrolleId);
-        delete result.benutzerrolleId;
-
-        if (helper.isNull(result.personId)) {
-            result.person = null;
-        } else {
-            result.person = personDao.loadById(result.personId);
-        }
-        delete result.personId;
-
         return result;
     }
 
-    loadAll() {
-        const benutzerrolleDao = new BenutzerrolleDao(this._conn);
-        const personDao = new PersonDao(this._conn);
 
+    /*loadAll() {
         var sql = 'SELECT * FROM Benutzer';
         var statement = this._conn.prepare(sql);
         var result = statement.all();
@@ -61,9 +46,11 @@ class BenutzerDao {
         }
 
         return result;
-    }
+    }*/
 
-    exists(id) {
+
+
+    exists(id) { // checkt nach, ob die ID exisitert
         var sql = 'SELECT COUNT(id) AS cnt FROM Benutzer WHERE id=?';
         var statement = this._conn.prepare(sql);
         var result = statement.get(id);
@@ -74,7 +61,8 @@ class BenutzerDao {
         return false;
     }
 
-    isunique(benutzername) {
+    isunique(benutzername) {  // Überprüft, ob ein benutzername in der Tabelle 
+        //Benutzer eindeutig ist (d. h., ob er noch nicht verwendet wurde).
         var sql = 'SELECT COUNT(id) AS cnt FROM Benutzer WHERE benutzername=?';
         var statement = this._conn.prepare(sql);
         var result = statement.get(benutzername);
@@ -86,10 +74,10 @@ class BenutzerDao {
     }
 
     hasaccess(benutzername, passwort) {
-        const benutzerrolleDao = new BenutzerrolleDao(this._conn);
-        const personDao = new PersonDao(this._conn);
-
-        var sql = 'SELECT ID FROM Benutzer WHERE benutzername=? AND passwort=?';
+        // prüft, ob ein Benutzer mit dem angegebenen Benutzernamen und Passwort in der
+        // Datenbank existiert. Wenn der Benutzer existiert, wird dessen vollständiges
+        //Benutzerobjekt zurückgegeben; ansonsten wird ein Fehler geworfen
+        var sql = 'SELECT id FROM Benutzer WHERE benutzername=? AND passwort=?';
         var statement = this._conn.prepare(sql);
         var params = [benutzername, passwort];
         var result = statement.get(params);
@@ -97,13 +85,14 @@ class BenutzerDao {
         if (helper.isUndefined(result)) 
             throw new Error('User has no access');
      
-        return this.loadById(result.id);
+        return result.id;
     }
 
-    create(benutzername = '', passwort = '', benutzerrolleId = 1, personId = null) {
-        var sql = 'INSERT INTO Benutzer (benutzername,passwort,benutzerrolleID,personId) VALUES (?,?,?,?)';
+    create(benutzername = '', passwort = '') {
+        //kreiert benutzerobjekt und erstellt id aus letzter reihe
+        var sql = 'INSERT INTO Benutzer (benutzername,passwort) VALUES (?,?)';
         var statement = this._conn.prepare(sql);
-        var params = [benutzername, passwort, benutzerrolleId, personId];
+        var params = [benutzername, passwort];
         var result = statement.run(params);
 
         if (result.changes != 1) 
@@ -112,7 +101,7 @@ class BenutzerDao {
         return this.loadById(result.lastInsertRowid);
     }
 
-    update(id, benutzername = '', neuespasswort = null, benutzerrolleId = 1, personId = null) {
+    /*update(id, benutzername = '', neuespasswort = null) {
         
         if (helper.isNull(neuespasswort)) {
             var sql = 'UPDATE Benutzer SET benutzername=?,benutzerrolleId=?,personId=? WHERE id=?';
@@ -129,9 +118,9 @@ class BenutzerDao {
             throw new Error('Could not update existing Record. Data: ' + params);
 
         return this.loadById(id);
-    }
+    }*/
 
-    delete(id) {
+    /*delete(id) {
         try {
             var sql = 'DELETE FROM Benutzer WHERE id=?';
             var statement = this._conn.prepare(sql);
@@ -144,7 +133,7 @@ class BenutzerDao {
         } catch (ex) {
             throw new Error('Could not delete Record by id=' + id + '. Reason: ' + ex.message);
         }
-    }
+    }*/
 
     toString() {
         console.log('BenutzerDao [_conn=' + this._conn + ']');
