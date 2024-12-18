@@ -1,22 +1,36 @@
-const helper = require('../helper.js'); //Module rausholen für Überprüfungen
+const helper = require('../helper.js');
 
 class KategorieDao {
-
     constructor(dbConnection) {
-        this._conn = dbConnection; // Datenbankverbindung speichern
+        this._conn = dbConnection;
     }
 
-    getConnection() { // Verbindung zurückgeben
+    getConnection() {
         return this._conn;
     }
 
+    // Einzelne Kategorie nach ID laden
     loadById(id) {
-        var sql = 'SELECT * FROM Kategorie WHERE id=?';
-        var statement = this._conn.prepare(sql);
-        var result = statement.get(id);
+        const sql = 'SELECT * FROM Kategorie WHERE id = ?';
+        const statement = this._conn.prepare(sql);
+        const result = statement.get(id);
 
-        if (helper.isUndefined(result)) 
-            throw new Error('No Record found by id=' + id);
+        if (helper.isUndefined(result)) {
+            throw new Error(`No record found for id=${id} in Kategorie.`);
+        }
+
+        return result;
+    }
+
+    // Alle Kategorien laden
+    loadAll() {
+        const sql = 'SELECT * FROM Kategorie';
+        const statement = this._conn.prepare(sql);
+        const result = statement.all();
+
+        if (helper.isArrayEmpty(result)) {
+            return [];
+        }
 
         return result;
     }

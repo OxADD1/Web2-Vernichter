@@ -2,6 +2,11 @@ const helper = require('../helper.js'); //Module rausholen für Überprüfungen
 const KategorieDao = require('./kategorieDao.js');
 const BenutzerDao = require('./benutzerDao.js');
 
+/*In der Bankkonto-Logik benötigst du die userId, um sicherzustellen, dass jeder Benutzer nur seine eigenen Daten sehen, ändern oder löschen kann.
+Nutze validateToken für alle geschützten Routen, die benutzerspezifische Daten verarbeiten.
+Bei Routen, die globale Daten bereitstellen (z.B. Kategorien), ist die userId nicht nötig.*/ 
+
+
 class TransaktionDao {
 
     constructor(dbConnection) {
@@ -12,18 +17,18 @@ class TransaktionDao {
         return this._conn;
     }
 
-    loadById(id) { // ein bankonto laden, wichtig für transaktionen
+    loadById(id, userId) { // ein bankonto laden, wichtig für transaktionen
         const kategorieDao = new KategorieDao(this._conn);
         const benutzerDao = new BenutzerDao(this._conn);
     
-        var sql = 'SELECT * FROM Transaktion WHERE id=?'; // man muss hier tabelle eingeben
+        var sql = 'SELECT * FROM Transaktion WHERE id = ? AND benutzer_id = ?'; // man muss hier tabelle eingeben
         var statement = this._conn.prepare(sql);
-        var result = statement.get(id);
+        var result = statement.get(id, userId);
 
         if (helper.isUndefined(result)) 
             throw new Error('No Record found by id=' + id);
 
-        result.benutzer = benutzerDao.loadById(result.benutzer_id); // objekt in objekt
+        result.benutzer = benutzerDao.loadById(result.userId); // objekt in objekt
         delete result.benutzer_id;
     
         result.kategorie = kategorieDao.loadById(result.kategorie_id);
@@ -39,8 +44,8 @@ class TransaktionDao {
 
         var sql = 'SELECT * FROM Transaktion WHERE benutzer_id=?';
         var statement = this._conn.prepare(sql);
-        var params = [userId];
-        var arr = statement.all(params);
+        var params = [userId]; // Array mit userId
+        var arr = statement.all(params); // führt sql abfrage aus und ersetzt die ? im SQl befehl durch die werte aus den klammern
 
         if (helper.isArrayEmpty(arr)) 
             return [];
@@ -157,6 +162,8 @@ class TransaktionDao {
         
         // Führe das Statement mit den Werten aus
         const result = statement.run(params);
+        //statement.all wenn mehrere Datemsätze geladen werden sollen
+        //statement.run, um Daten in DB zu schreiben oder zu verändern
     
         // Überprüfen, ob genau eine Zeile eingefügt wurde
         if (result.changes !== 1) {
@@ -168,36 +175,62 @@ class TransaktionDao {
     }
     
 
-    update(id, benutzerId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert = 0.00, datum, notiz, typ) {
-        const sql = `UPDATE Transaktion SET benutzer_id = ?, bankkonto_id_von = ?, bankkonto_id_nach = ?, kategorie_id = ?, wert = ?, transaktions_datum = ?, notiz = ?, typ = ? WHERE id = ?`;
+    update(id, userId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert = 0.00, datum, notiz, typ) {
+        
+        // Prüfen, ob die Transaktion existiert
+        if (!this.exists(id, userId)) {
+            throw new Error(`Transaction with id=${id} for userId=${userId} does not exist.`);
+        }
+        
+        const sql = `
+            UPDATE Transaktion 
+            SET bankkonto_id_von = ?, bankkonto_id_nach = ?, 
+                kategorie_id = ?, wert = ?, transaktions_datum = ?, 
+                notiz = ?, typ = ?
+            WHERE id = ? AND benutzer_id = ?`;
     
         const statement = this._conn.prepare(sql);
-        const params = [benutzerId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ, id];
+    
+        // Parameter: Werte für das Update und die Überprüfung auf id und userId
+        const params = [bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ, id, userId];
     
         const result = statement.run(params);
     
+        // Prüfen, ob genau ein Datensatz aktualisiert wurde
         if (result.changes !== 1) {
-            throw new Error('Could not update existing record in transaktion. Data: ' + params);
+            throw new Error('Could not update existing record in Transaktion. Either it does not exist or does not belong to userId=' + userId);
         }
     
-        return this.loadById(id);
+        // Rückgabe der aktualisierten Transaktion
+        return this.loadById(id, userId);
     }
-
-    delete(id) {
-        try {
-            const sql = 'DELETE FROM Transaktion WHERE id = ?';
-            const statement = this._conn.prepare(sql);
-            const result = statement.run(id);
     
+
+    delete(id, userId) {
+        // Prüfen, ob die Transaktion existiert
+        if (!this.exists(id, userId)) {
+            throw new Error(`Transaction with id=${id} for userId=${userId} does not exist.`);
+        }
+        
+        
+        try {
+            const sql = 'DELETE FROM Transaktion WHERE id = ? AND benutzer_id = ?';
+            const statement = this._conn.prepare(sql);
+    
+            // Führe die Abfrage aus und übergebe id und userId
+            const result = statement.run(id, userId);
+    
+            // Überprüfe, ob genau ein Datensatz gelöscht wurde
             if (result.changes !== 1) {
-                throw new Error('Could not delete record with id=' + id + ' in transaktion.');
+                throw new Error(`Could not delete record with id=${id} for userId=${userId}. Either it does not exist or does not belong to the user.`);
             }
     
-            return true;
+            return true; // Erfolgreich gelöscht
         } catch (error) {
-            throw new Error('Could not delete record with id=' + id + ' in transaktion. Reason: ' + error.message);
+            throw new Error(`Could not delete record with id=${id} for userId=${userId}. Reason: ${error.message}`);
         }
     }
+    
     
 
     toString() {

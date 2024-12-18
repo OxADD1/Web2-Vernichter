@@ -64,6 +64,13 @@ try {
     serviceRouter = require('./services/transaktion.js');
     app.use(TOPLEVELPATH, serviceRouter);
 
+    serviceRouter = require('./services/bankkonto.js');
+    app.use(TOPLEVELPATH, serviceRouter);
+
+    serviceRouter = require('./services/kategorie.js');
+    app.use(TOPLEVELPATH, serviceRouter);
+
+
     
     // send default error message if no matching endpoint found
     app.use(function (request, response) {

@@ -10,14 +10,13 @@ class BenutzerDao {
         return this._conn;
     }
 
-    // Kann man vllt löschen oder wichtig für Token und Login?
+    // Lädt einen Benutzer anhand seiner ID (z.B. für Authentifizierung/Prüfungen)
     loadById(id) {
-        //Benutzerobjekt noch email und passwort hinzufügen?
-        var sql = 'SELECT * FROM Benutzer WHERE id=?';
-        var statement = this._conn.prepare(sql);
-        var result = statement.get(id);
+        const sql = 'SELECT * FROM Benutzer WHERE id = ?';
+        const statement = this._conn.prepare(sql);
+        const result = statement.get(id);
 
-        if (helper.isUndefined(result)) 
+        if (helper.isUndefined(result))
             throw new Error('No Record found by id=' + id);
 
         return result;
@@ -50,56 +49,65 @@ class BenutzerDao {
 
 
 
-    exists(id) { // checkt nach, ob die ID exisitert
-        var sql = 'SELECT COUNT(id) AS cnt FROM Benutzer WHERE id=?';
-        var statement = this._conn.prepare(sql);
-        var result = statement.get(id);
+    // Prüft, ob ein Benutzer mit der gegebenen ID existiert
+    exists(id) {
+        const sql = 'SELECT COUNT(id) AS cnt FROM Benutzer WHERE id = ?';
+        const statement = this._conn.prepare(sql);
+        const result = statement.get(id);
 
-        if (result.cnt == 1) 
-            return true;
-
-        return false;
+        return result.cnt === 1;
     }
 
-    isunique(benutzername) {  // Überprüft, ob ein benutzername in der Tabelle 
-        //Benutzer eindeutig ist (d. h., ob er noch nicht verwendet wurde).
-        var sql = 'SELECT COUNT(id) AS cnt FROM Benutzer WHERE benutzername=?';
-        var statement = this._conn.prepare(sql);
-        var result = statement.get(benutzername);
 
-        if (result.cnt == 0) 
-            return true;
 
-        return false;
+    // Prüft, ob ein Benutzername eindeutig ist (für Registrierung)
+    isunique(benutzername) {
+        const sql = 'SELECT COUNT(id) AS cnt FROM Benutzer WHERE benutzername = ?';
+        const statement = this._conn.prepare(sql);
+        const result = statement.get(benutzername);
+
+        return result.cnt === 0; // true, wenn Benutzername einzigartig ist
     }
 
+
+
+    // prüft, ob ein Benutzer mit dem angegebenen Benutzernamen und Passwort in der
+    // Datenbank existiert. Wenn der Benutzer existiert, wird dessen vollständiges
+    //Benutzerobjekt zurückgegeben; ansonsten wird ein Fehler geworfen
+    // Prüft, ob Benutzer Zugriff hat (Login)
     hasaccess(benutzername, passwort) {
-        // prüft, ob ein Benutzer mit dem angegebenen Benutzernamen und Passwort in der
-        // Datenbank existiert. Wenn der Benutzer existiert, wird dessen vollständiges
-        //Benutzerobjekt zurückgegeben; ansonsten wird ein Fehler geworfen
-        var sql = 'SELECT id FROM Benutzer WHERE benutzername=? AND passwort=?';
-        var statement = this._conn.prepare(sql);
-        var params = [benutzername, passwort];
-        var result = statement.get(params);
+        const sql = 'SELECT id FROM Benutzer WHERE benutzername = ? AND passwort = ?';
+        const statement = this._conn.prepare(sql);
+        const params = [benutzername, passwort];
+        const result = statement.get(params);
 
-        if (helper.isUndefined(result)) 
-            throw new Error('User has no access');
-     
-        return result.id;
+        if (helper.isUndefined(result))
+            throw new Error('Invalid credentials. Access denied.');
+
+        return result.id; // Gibt die Benutzer-ID zurück, falls Zugang besteht
     }
 
     create(benutzername = '', passwort = '') {
-        //kreiert benutzerobjekt und erstellt id aus letzter reihe
-        var sql = 'INSERT INTO Benutzer (benutzername,passwort) VALUES (?,?)';
-        var statement = this._conn.prepare(sql);
-        var params = [benutzername, passwort];
-        var result = statement.run(params);
-
-        if (result.changes != 1) 
-            throw new Error('Could not insert new Record. Data: ' + params);
-
+        // Prüfen, ob der Benutzername eindeutig ist
+        if (!this.isunique(benutzername)) {
+            throw new Error('Benutzername ist bereits vergeben: ' + benutzername);
+        }
+    
+        // Benutzer erstellen
+        const sqlInsert = 'INSERT INTO Benutzer (benutzername, passwort) VALUES (?, ?)';
+        const statementInsert = this._conn.prepare(sqlInsert);
+        const params = [benutzername, passwort];
+        const result = statementInsert.run(params);
+    
+        if (result.changes !== 1) {
+            throw new Error('Benutzer konnte nicht erstellt werden. Daten: ' + params);
+        }
+    
+        // Rückgabe des neu erstellten Benutzers
         return this.loadById(result.lastInsertRowid);
     }
+    
+
 
     /*update(id, benutzername = '', neuespasswort = null) {
         

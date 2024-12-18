@@ -6,136 +6,136 @@ var serviceRouter = express.Router();
 
 console.log('- Service Benutzer');
 
-serviceRouter.get('/benutzer/gib/:id', function(request, response) {
-    // Liefert ein JSON Objekt vom Typ Benutzer für die angegebene [id]
-    console.log('Service Benutzer: Client requested one record, id=' + request.params.id);
+/**Warum kein validateToken hier notwendig?
+ * - Login und Registeriung sind öffentliche Endpunkte
+ * - Benutzer Service dient nur der Authentifizierung fürs Login und Registrierung
+ * - Sobald Benutzer eingeloggt ist, nutzt er ein Token für alle anderen Endpunkte, die 
+ * Benutzerspezifische Daten laden oder ändern
+ * 
+ * - Nur wenn Benutzer eigene Daten ändern oder löschen möchte, bräuchte man Authentifizierung und somit die Funktion validateToken()
+ * 
+ * 
+ * WICHIG: In REST wird 
+ * - GET für lesende Operationen verwendet und sollte keine Nebenwirkungen haben aka Zustand ändern
+ * - POST für Bearbeitung verwendet, aber auch um Informationen wie Token zu erstellen, was bei Login passiert.
+ */
+
+
+
+// Benutzer-Daten abrufen
+serviceRouter.get('/benutzer/:id', function(request, response) {
+    console.log('Service Benutzer: Client requested user data for id=' + request.params.id);
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
+        // Benutzer-Daten laden
         var obj = benutzerDao.loadById(request.params.id);
-        console.log('Service Benutzer: Record loaded');
+        console.log('Service Benutzer: User data loaded successfully');
         response.status(200).json(obj);
     } catch (ex) {
-        console.error('Service Benutzer: Error loading record by id. Exception occured: ' + ex.message);
+        console.error('Service Benutzer: Error loading user data. Exception: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });
 
-/*serviceRouter.get('/benutzer/alle', function(request, response) {
-    console.log('Service Benutzer: Client requested all records');
 
-    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
-    try {
-        var arr = benutzerDao.loadAll();
-        console.log('Service Benutzer: Records loaded, count=' + arr.length);
-        response.status(200).json(arr);
-    } catch (ex) {
-        console.error('Service Benutzer: Error loading all records. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
-});*/
 
-serviceRouter.get('/benutzer/existiert/:id', function(request, response) {
-    console.log('Service Benutzer: Client requested check, if record exists, id=' + request.params.id);
+/**
+ * Route: POST /benutzer/registrieren
+ * Zweck: Registriert einen neuen Benutzer in der Datenbank.
+ * Anforderungen:
+ *  - Der Benutzername muss einzigartig sein.
+ *  - Passwort muss vorhanden sein.
+ */
+serviceRouter.post('/benutzer/registrieren', function(request, response) {
+    console.log('Service Benutzer: Client requested user registration');
 
-    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
-    try {
-        var exists = benutzerDao.exists(request.params.id);
-        console.log('Service Benutzer: Check if record exists by id=' + request.params.id + ', exists=' + exists);
-        response.status(200).json({ 'id': request.params.id, 'existiert': exists });
-    } catch (ex) {
-        console.error('Service Benutzer: Error checking if record exists. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
-});
-
-serviceRouter.get('/benutzer/eindeutig/:benutzername', function(request, response) {
-    console.log('Service Benutzer: Client requested check, if username is unique', request.params.benutzername);
-
-    var errorMsgs=[];
-    if (helper.isUndefined(request.params.benutzername)) 
-        errorMsgs.push('benutzername fehlt');
+    // Validierung: Überprüfen, ob alle erforderlichen Felder vorhanden sind
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.benutzername)) errorMsgs.push('benutzername fehlt');
+    if (helper.isUndefined(request.body.passwort)) errorMsgs.push('passwort fehlt');
 
     if (errorMsgs.length > 0) {
-        console.log('Service Benutzer: check not possible, data missing');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
-        return;
+        console.log('Service Benutzer: Registration not possible, data missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': helper.concatArray(errorMsgs) });
+        return; // Anfrage abbrechen
     }
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
-        var unique = benutzerDao.isunique(request.params.benutzername);
-        console.log('Service Benutzer: Check if unique, unique=' + unique);
-        response.status(200).json({ 'benutzername': request.body.benutzername, 'eindeutig': unique });
-    } catch (ex) {
-        console.error('Service Benutzer: Error checking if unique. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
-});
-
-serviceRouter.get('/benutzer/check', function(request, response) {
-    console.log('Service Benutzer: Client requested check, if user has access');
-    // Prüft nach ob ein gelieferter Benutzername / Passwort Zugang zum System haben, heißt in der Datenbank gespeichert sind. 
-    // Benötigt den zu prüfenden Benutzernamen und das Passwort als Parameter
-    
-    var un = request.headers['credentials-username'].trim();
-    var pw = request.headers['credentials-password'].trim();
-    
-    console.log('received credentials', un, pw);
-
-    var errorMsgs=[];
-    if (helper.isUndefined(un)) 
-        errorMsgs.push('benutzername fehlt');
-    if (helper.isUndefined(pw)) 
-        errorMsgs.push('passwort fehlt');
-
-    if (errorMsgs.length > 0) {
-        console.log('Service Benutzer: check not possible, data missing');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
-        return;
-    }
-
-    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
-    try {
-        var id = benutzerDao.hasaccess(un, pw);
-        console.log('Service Benutzer: Check if user has access, yes, userId=' + id);
-
-        // create token
-        var token = createToken.encrypt({ userId: id });
-        console.log('Service Token: Token created', token);
-
-        // token zurück senden
-        response.status(200).json({token: token});
-    } catch (ex) {
-        console.error('Service Benutzer: Error checking if user has access. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
-});
-
-serviceRouter.post('/benutzer', function(request, response) {
-    console.log('Service Benutzer: Client requested creation of new record');
-
-    var errorMsgs=[];
-    if (helper.isUndefined(request.body.benutzername)) 
-        errorMsgs.push('benutzername fehlt');
-    if (helper.isUndefined(request.body.passwort)) 
-    
-    if (errorMsgs.length > 0) {
-        console.log('Service Benutzer: Creation not possible, data missing');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
-        return;
-    }
-
-    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
-    try {
+        // Benutzer erstellen
         var obj = benutzerDao.create(request.body.benutzername, request.body.passwort);
-        console.log('Service Benutzer: Record inserted');
-        response.status(200).json(obj);
+        console.log('Service Benutzer: User registered successfully');
+        response.status(200).json(obj); // Erfolgreiche Rückgabe der Benutzer-Daten
     } catch (ex) {
-        console.error('Service Benutzer: Error creating new record. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+        console.error('Service Benutzer: Error during registration. Exception: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message }); // Fehlerantwort
     }
 });
+
+
+
+
+/**
+ * Route: POST /benutzer/login
+ * Zweck: Loggt einen Benutzer ein und gibt ein Token zurück.
+ * Anforderungen:
+ *  - Benutzername und Passwort müssen korrekt sein.
+ *  - Bei Erfolg wird ein Token generiert und zurückgegeben.
+ */
+serviceRouter.post('/benutzer/login', function(request, response) {
+    console.log('Service Benutzer: Client requested login');
+
+    // Validierung: Überprüfen, ob Benutzername und Passwort vorhanden sind
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.benutzername)) errorMsgs.push('benutzername fehlt');
+    if (helper.isUndefined(request.body.passwort)) errorMsgs.push('passwort fehlt');
+
+    if (errorMsgs.length > 0) {
+        console.log('Service Benutzer: Login not possible, data missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': helper.concatArray(errorMsgs) });
+        return; // Anfrage abbrechen
+    }
+
+    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
+    try {
+        // Zugang prüfen: Benutzername und Passwort validieren
+        var userId = benutzerDao.hasaccess(request.body.benutzername, request.body.passwort);
+
+        // Token erstellen: Das Token enthält die Benutzer-ID
+        var token = createToken.encrypt({ userId: userId });
+        console.log('Service Benutzer: Login successful, token generated');
+        response.status(200).json({ 'token': token }); // Token an den Client senden
+    } catch (ex) {
+        console.error('Service Benutzer: Error during login. Exception: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message }); // Fehlerantwort
+    }
+});
+
+
+
+/**
+ * Route: GET /benutzer/:id
+ * Zweck: Lädt die Daten eines Benutzers basierend auf seiner ID.
+ * Anforderungen:
+ *  - ID muss gültig sein.
+ */
+serviceRouter.get('/benutzer/:id', function(request, response) {
+    console.log('Service Benutzer: Client requested user data for id=' + request.params.id);
+
+    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
+    try {
+        // Benutzer-Daten laden
+        var obj = benutzerDao.loadById(request.params.id);
+        console.log('Service Benutzer: User data loaded successfully');
+        response.status(200).json(obj); // Erfolgreiche Rückgabe der Benutzer-Daten
+    } catch (ex) {
+        console.error('Service Benutzer: Error loading user data. Exception: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message }); // Fehlerantwort
+    }
+});
+
+
 
 /*serviceRouter.put('/benutzer', function(request, response) {
     console.log('Service Benutzer: Client requested update of existing record');
@@ -176,6 +176,21 @@ serviceRouter.post('/benutzer', function(request, response) {
         response.status(200).json({ 'gelöscht': true, 'eintrag': obj });
     } catch (ex) {
         console.error('Service Benutzer: Error deleting record. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+
+/*serviceRouter.get('/benutzer/alle', function(request, response) {
+    console.log('Service Benutzer: Client requested all records');
+
+    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
+    try {
+        var arr = benutzerDao.loadAll();
+        console.log('Service Benutzer: Records loaded, count=' + arr.length);
+        response.status(200).json(arr);
+    } catch (ex) {
+        console.error('Service Benutzer: Error loading all records. Exception occured: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });*/
