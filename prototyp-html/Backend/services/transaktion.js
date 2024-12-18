@@ -15,6 +15,7 @@ serviceRouter.get('/transaktion/vonBenutzer', validateToken, function(request, r
     const transaktionDao = new TransaktionDao(request.app.locals.dbConnection);
     try {
         var arr = transaktionDao.loadAllByUserId(request.userId);
+        console.log('Transaktionen vom User' + arr);
         console.log('Service Transaktion: Records loaded, count=' + arr.length);
         response.status(200).json(arr);
     } catch (ex) {
@@ -22,5 +23,14 @@ serviceRouter.get('/transaktion/vonBenutzer', validateToken, function(request, r
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });
+
+
+
+
+
+
+
+
+
 
 module.exports = serviceRouter;

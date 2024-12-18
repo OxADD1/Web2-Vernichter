@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/kontoverwaltung.css">
     <script href="../js/logout.js"></script>
+    <script href="../js/token.js"></script>
+    <!-- Skripte für Bootstrap und Chart.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="../lib/bootstrap/bootstrap.min.js"></script>
+    <script src="../lib/Chart/chart.js"></script>
+    <!-- JavaScript zur Validierung des Eingabefeldes -->
+    <script src="../js/decimalValidation.js"></script>
+    
+    
 </head>
 
 <script>
@@ -63,7 +72,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Neues Konto hinzufügen (Ausklappbar) -->
         <div class="add-account-box">
             <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#addAccountForm" aria-expanded="false" aria-controls="addAccountForm">
@@ -84,10 +92,16 @@
                     <div class="form-group">
                         <label for="accoutnIBAN">IBAN</label>
                         <input type="text" class="form-control" id="accountIBAN" placeholder="IBAN">
-                    </div>
-                    <button type="button" class="btn btn-success btn-block" onclick="validateForm()">Konto hinzufügen</button>
+                    
+                        <div id="answer" style="color:red"></div>
 
+                    </div>
+                    <button type="button" class="btn btn-success btn-block" 
+                    onclick="validateInput('wert', 'hinzufuegenModal')">
+                    Konto hinzufügen
+                </button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -127,8 +141,11 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="validateEditForm()" data-dismiss="modal">Speichern</button>
-                </div>
+                    <button type="button" class="btn btn-primary" 
+                    onclick="validateInput('editWert', 'editSuccessModal')">
+                    Speichern
+                </button>
+                                </div>
             </div>
         </div>
     </div>
@@ -193,100 +210,8 @@
         </div>
     </div>
 
-    <!-- Skripte für Bootstrap und Chart.js -->
-    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
-    <script src="../lib/bootstrap/bootstrap.min.js"></script>
-    <script src="../lib/Chart/chart.js"></script>
+    
 
-    <!-- JavaScript zur Validierung des Eingabefeldes -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const wertInput = document.getElementById('wert');
-            const errorMessage = document.getElementById('error-message');
-
-            wertInput.addEventListener('input', function(e) {
-                let value = e.target.value;
-
-                // Ueberpruefe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
-                if (!/^\d*\.?\d{0,2}$/.test(value)) {
-                    e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
-                }
-
-                // Zeige eine Fehlermeldung an, wenn der Wert ungueltig ist
-                if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
-                    wertInput.classList.remove('invalid-input');
-                    errorMessage.style.display = 'none';
-                } else {
-                    wertInput.classList.add('invalid-input');
-                    errorMessage.style.display = 'block';
-                }
-            });
-
-            wertInput.addEventListener('keydown', function(e) {
-                // Verhindern, dass mehr als ein Dezimalpunkt eingegeben wird
-                if (e.key === '.' && wertInput.value.includes('.')) {
-                    e.preventDefault();
-                }
-            });
-        });
-
-        function validateForm() {
-            const wert = document.getElementById('wert').value;
-            const regex = /^\d+(\.\d{1,2})?$/;
-
-            if (!regex.test(wert)) {
-                alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
-            } else {
-                // Wenn die Eingabe korrekt ist, oeffne das Hinzufuegen-Modal
-                $('#hinzufuegenModal').modal('show');
-            }
-        }
-    </script>
-
-    <!-- JavaScript zur Validierung des Eingabefeldes bei Bearbeiten-->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const wertInput = document.getElementById('editWert');
-            const errorMessage = document.getElementById('error-message-edit');
-
-            wertInput.addEventListener('input', function(e) {
-                let value = e.target.value;
-
-                // Ueberpruefe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
-                if (!/^\d*\.?\d{0,2}$/.test(value)) {
-                    e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
-                }
-
-                // Zeige eine Fehlermeldung an, wenn der Wert ungueltig ist
-                if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
-                    wertInput.classList.remove('invalid-input');
-                    errorMessage.style.display = 'none';
-                } else {
-                    wertInput.classList.add('invalid-input');
-                    errorMessage.style.display = 'block';
-                }
-            });
-
-            wertInput.addEventListener('keydown', function(e) {
-                // Verhindern, dass mehr als ein Dezimalpunkt eingegeben wird
-                if (e.key === '.' && wertInput.value.includes('.')) {
-                    e.preventDefault();
-                }
-            });
-        });
-
-        function validateEditForm() {
-            const wert = document.getElementById('editWert').value;
-            const regex = /^\d+(\.\d{1,2})?$/;
-
-            if (!regex.test(wert)) {
-                alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
-            } else {
-                // Wenn die Eingabe korrekt ist, oeffne das Erfolgreich-Modal
-                $('#editSuccessModal').modal('show');
-            }
-        }
-    </script>
 </body>
 
 </html>

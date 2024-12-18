@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="../css/transaktion.css">
     <script href="../js/token.js"></script>
     <script href="../js/logout.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="../lib/bootstrap/bootstrap.min.js"></script> <!-- Bootstrap 4 JS -->
+    <!-- JavaScript zur Validierung des Eingabefeldes -->
+    <script src="../js/decimalValidation.js"></script>
 </head>
 
 <script>
@@ -53,7 +57,7 @@
         <!-- Formular für Transaktionsdetails -->
     <div id="transaktionForm" class="container mt-4">
         <h4>Transaktionsdetails</h4>    
-        <form>
+        <form id="transaktionForm">
             <div class="form-group">
                 <label for="konto">Konto</label>
                 <select class="form-control" id="konto">
@@ -88,7 +92,9 @@
                 <input type="date" class="form-control" id="datum">
             </div>
 
-            <button type="button" class="btn btn-primary btn-add" onclick="validateForm()">
+            <div id="answer" style="color:red"></div>
+
+            <button type="button" class="btn btn-primary btn-add" onclick="validateInput('wert', 'hinzufuegenModal', 'transaktionForm')">
                 Hinzufügen
             </button>
         </form>
@@ -99,29 +105,15 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="hinzufuegenModalLabel">Transaktion wurde hinzugefügt</h5>
+                    <h5 class="modal-title" id="hinzufuegenModalLabel">Die Transaktion wurde hinzugefügt!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-
-                <div class="form-group">
-                    <label for="kategorie">Kategorie</label>
-                    <select class="form-control" id="kategorie">
-                        <option>Lebensmittel</option>
-                        <option>Miete</option>
-                        <option>Freizeit</option>
-                    </select>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div> 
                 </div>
-
-                <div class="form-group">
-                    <label for="notiz">Notiz hinzufügen</label>
-                    <input type="text" class="form-control" id="notiz" placeholder="Optional">
-                </div>
-
-                <div class="form-group">
-                    <label for="datum">Datum</label>
-                    <input type="date" class="form-control" id="datum">
-                </div>
-
-                <button type="button" class="btn btn-primary btn-add" id="hinzufuegenBtn">Hinzufügen</button>
             </div>
         </div>
     </div>
@@ -129,7 +121,7 @@
         <!-- Formular für Umbuchung anzeigen -->
         <div id="umbuchungForm" class="container mt-4" style="display: none;">
             <h4>Umbuchung</h4>
-            <form>
+            <form id="umbuchungsForm2">
                 <div class="form-group">
                     <label for="konto1">Von Konto</label>
                     <select class="form-control" id="konto1">
@@ -162,7 +154,11 @@
                     <input type="date" class="form-control" id="datumUmbuchung">
                 </div>
 
-                <button type="button" class="btn btn-primary btn-add" id="umbuchungBtn">Umbuchung hinzufügen</button>
+                <button type="button" class="btn btn-primary btn-add" onclick="validateInput('wertUmbuchung', 'hinzufuegenModal', 'umbuchungsForm2')">
+                    Hinzufügen
+                </button>
+
+
             </form>
         </div>
 
@@ -171,8 +167,7 @@
         <p>Firma ©2025 | <a href="./kundenservice.html">Kontakt</a> | <a href="./impressum.html">Impressum</a></p>
     </footer>
 
-    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script> <!-- jQuery -->
-    <script src="../lib/bootstrap/bootstrap.min.js"></script> <!-- Bootstrap 4 JS -->
+    
     <script>
         // JavaScript zur Anzeige des entsprechenden Formulars
         document.getElementById('umbuchung').addEventListener('click', function() {
@@ -191,58 +186,15 @@
         });
 
         // Hinzufügen Button - Beispielaktion
-        document.getElementById('hinzufuegenBtn').addEventListener('click', function() {
+        /*document.getElementById('hinzufuegenBtn').addEventListener('click', function() {
             alert('Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.');
         });
 
         document.getElementById('umbuchungBtn').addEventListener('click', function() {
             alert('Die Umbuchung wurde erfolgreich durchgeführt.');
-        });
+        });*/
     </script> 
-    <!-- JavaScript zur Validierung des Eingabefeldes -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const wertInput = document.getElementById('wert');
-            const errorMessage = document.getElementById('error-message');
 
-            wertInput.addEventListener('input', function(e) {
-                let value = e.target.value;
-
-                // Ueberpruefe, ob der Wert den Anforderungen entspricht (Zahlen mit maximal zwei Nachkommastellen)
-                if (!/^\d*\.?\d{0,2}$/.test(value)) {
-                    e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
-                }
-
-                // Zeige eine Fehlermeldung an, wenn der Wert ungueltig ist
-                if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
-                    wertInput.classList.remove('invalid-input');
-                    errorMessage.style.display = 'none';
-                } else {
-                    wertInput.classList.add('invalid-input');
-                    errorMessage.style.display = 'block';
-                }
-            });
-
-            wertInput.addEventListener('keydown', function(e) {
-                // Verhindern, dass mehr als ein Dezimalpunkt eingegeben wird
-                if (e.key === '.' && wertInput.value.includes('.')) {
-                    e.preventDefault();
-                }
-            });
-        });
-
-        function validateForm() {
-            const wert = document.getElementById('wert').value;
-            const regex = /^\d+(\.\d{1,2})?$/;
-
-            if (!regex.test(wert)) {
-                alert("Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.");
-            } else {
-                // Wenn die Eingabe korrekt ist, oeffne das Hinzufuegen-Modal
-                $('#hinzufuegenModal').modal('show');
-            }
-        }
-    </script>  
 
     
 </body>
