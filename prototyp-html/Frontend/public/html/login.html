@@ -47,6 +47,7 @@
                     var un = $('#userName').val().trim();
                     var pw = $('#passWord').val().trim();
 
+
                     // check if data missing
                     if (un.length == 0) {
                         $('#errorArea').html('Login fehlerhaft, bitte geben Sie den Benutzernamen ein');
@@ -61,16 +62,14 @@
                     var pwHash = md5(pw);
                     console.log('formular ausgelöst', un, pw, pwHash);
 
-                    // create payload to send via ajax request
-                    var payload = { 'credentials-username': un, 'credentials-password': pwHash };
-
+                    var payload = JSON.stringify({ benutzername: un, passwort: pwHash });
                     $.ajax({
                         url: 'http://localhost:8000/api/benutzer/login',
                         method: 'post',
                         contentType: 'application/json; charset=utf-8',
-                        cache: false,
+                        data: payload,
                         dataType: 'json',
-                        headers: payload
+                        cache: false
                     }).done(function (response) {
                         console.log('received Response', response);
 

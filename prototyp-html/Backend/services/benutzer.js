@@ -84,6 +84,7 @@ serviceRouter.post('/benutzer/registrieren', function(request, response) {
  *  - Bei Erfolg wird ein Token generiert und zurückgegeben.
  */
 serviceRouter.post('/benutzer/login', function(request, response) {
+    //const { username, password } = req.body;
     console.log('Service Benutzer: Client requested login');
 
     // Validierung: Überprüfen, ob Benutzername und Passwort vorhanden sind
