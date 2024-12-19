@@ -1,4 +1,5 @@
 const helper = require('../helper.js'); //Module rausholen für Überprüfungen
+const BenutzerDao = require('./benutzerDao.js');
 
 class KundenserviceDao {
 
@@ -11,8 +12,10 @@ class KundenserviceDao {
     }
 
     create(typ, anrede, name, email, nachricht, userId) {
+        const benutzerDao = new BenutzerDao(this._conn);
+
         const sql = `
-            INSERT INTO Kundenservice (typ, anrede, name, email, nachricht, benutzer_id)
+            INSERT INTO Kundenservice (typ, anrede, name, email, nachricht, user_id)
             VALUES (?, ?, ?, ?, ?, ?)`;
         const params = [typ, anrede, name, email, nachricht, userId];
     
@@ -23,6 +26,11 @@ class KundenserviceDao {
             throw new Error('Der Kundenservice-Eintrag konnte nicht erstellt werden.');
         }
     
+
+        result.benutzer = benutzerDao.loadById(result.userId);
+        delete result.benutzer_id;
+
+
         return {
             id: result.lastInsertRowid,
             typ: typ,
@@ -30,7 +38,7 @@ class KundenserviceDao {
             name: name,
             email: email,
             nachricht: nachricht,
-            benutzer_id: userId
+            benutzer: benutzer
         };
     }
     

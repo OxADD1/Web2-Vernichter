@@ -26,13 +26,15 @@ INSERT INTO Kategorie (name) VALUES
 ('Freizeit'), 
 ('Sonstiges');
 
-CREATE TABLE Kundenservice (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE Kundenservice_new (
+    id INTEGER PRIMARY KEY,
     typ TEXT NOT NULL,
     anrede TEXT NOT NULL,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
-    nachricht TEXT NOT NULL
+    nachricht TEXT NOT NULL,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES Benutzer(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Transaktion (
