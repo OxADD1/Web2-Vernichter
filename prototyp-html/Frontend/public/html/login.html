@@ -65,8 +65,8 @@
                     var payload = { 'credentials-username': un, 'credentials-password': pwHash };
 
                     $.ajax({
-                        url: 'http://localhost:8000/api/benutzer/check',
-                        method: 'get',
+                        url: 'http://localhost:8000/api/benutzer/login',
+                        method: 'post',
                         contentType: 'application/json; charset=utf-8',
                         cache: false,
                         dataType: 'json',
