@@ -155,10 +155,10 @@ class TransaktionDao {
         return false;
     }
 
-    create(benutzerId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert = 0.00, datum, notiz, typ) {
+    create(userId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert = 0.00, datum, notiz, typ) {
         const sql = `INSERT INTO Transaktion (benutzer_id, bankkonto_id_von, bankkonto_id_nach, kategorie_id, wert, transaktions_datum, notiz, typ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
         const statement = this._conn.prepare(sql); // Bereite das SQL-Statement vor
-        const params = [benutzer_id, bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ]; // Parameter-Werte
+        const params = [userId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ]; // Parameter-Werte
         
         // Führe das Statement mit den Werten aus
         const result = statement.run(params);
