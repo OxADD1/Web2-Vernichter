@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrierung</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="../js/token.js"></script>
+    <script src="../js/md5.min.js"></script>
+    <script src="../lib/bootstrap/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
 </head>
 <body>
@@ -33,32 +37,73 @@
         </div>
     </div>
 
-    <script src="../lib/jquery/jquery-3.5.1.slim.min.js"></script>
-    <script src="../lib/bootstrap/bootstrap.min.js"></script>
 
     <script>
-        // Formular absenden
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Verhindert das Standard-Formular-Absenden
-
-            // Passwörter überprüfen
-            var password = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('confirm_password').value;
-
-            if (password !== confirmPassword) {
-                // Zeige Fehlermeldung an
-                document.getElementById('error-message').style.display = 'block';
-            } else {
-                // Verberge Fehlermeldung und zeige Erfolgsmeldung
-                document.getElementById('error-message').style.display = 'none';
-                document.getElementById('success-message').style.display = 'block';
-
-                // Weiterleitung zur Login-Seite nach 3 Sekunden
-                setTimeout(function() {
-                    window.location.href = 'login.html';
-                }, 3000);
+        $(document).ready(function() {
+            // Fehlermeldung leeren, wenn der Benutzer tippt
+            $('#benutzername').keydown(clearErrorArea);
+            $('#passwort').keydown(clearErrorArea);
+            $('#passwort_wiederholen').keydown(clearErrorArea);
+    
+            // Formular absenden
+            $('#registrationForm').submit(function(form) {
+                form.preventDefault();
+    
+                // Daten aus dem Formular holen und bereinigen
+                var benutzername = $('#username').val().trim();
+                var passwort = $('#password').val().trim();
+                var passwortWiederholen = $('#confirm_password').val().trim();
+    
+                // Validierung: Überprüfen, ob Eingaben fehlen
+                if (benutzername.length === 0) {
+                    $('#errorArea').html('Registrierung fehlerhaft, bitte geben Sie einen Benutzernamen ein.');
+                    return;
+                }
+                if (passwort.length === 0) {
+                    $('#errorArea').html('Registrierung fehlerhaft, bitte geben Sie ein Passwort ein.');
+                    return;
+                }
+                if (passwort !== passwortWiederholen) {
+                    $('#errorArea').html('Die Passwörter stimmen nicht überein.');
+                    return;
+                }
+    
+                // Passwort mit MD5 hashen
+                var pwHash = md5(passwort);
+                console.log('formular ausgelöst', benutzername, passwort, pwHash);
+    
+                // Payload erstellen
+                var payload = JSON.stringify({ benutzername: benutzername, passwort: pwHash });
+    
+                // AJAX-Request
+                $.ajax({
+                    url: 'http://localhost:8000/api/benutzer/registrieren',
+                    method: 'post',
+                    contentType: 'application/json; charset=utf-8',
+                    data: payload, // und nicht als header, weil wir nicht get benutzen
+                    dataType: 'json',
+                    cache: false
+                }).done(function(response) {
+                    console.log('received Response', response);
+    
+                    // Registrierung erfolgreich
+                    $('#successArea').html('Registrierung erfolgreich! Sie werden zum Login weitergeleitet.');
+    
+                    // jump to profile page
+                    location.href = 'login.html';
+    
+                }).fail(function(jqXHR, statusText, error) {
+                    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                    $('#errorArea').html('Registrierung fehlerhaft: ' + jqXHR.responseText);
+                });
+            });
+    
+            // Funktion, um die Fehlermeldung zu leeren
+            function clearErrorArea() {
+                $('#errorArea').empty();
             }
         });
     </script>
+    
 </body>
 </html>
