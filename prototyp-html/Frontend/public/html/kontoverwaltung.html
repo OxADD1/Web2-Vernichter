@@ -19,6 +19,8 @@
     <script src="../js/sessionHandling.js"></script>
     <script src="../js/decimalValidation.js"></script>
     <script src="../js/kontoAjax.js"></script>
+    <script src="../js/welcomeName.js"></script>
+
     
     <script>
         validateTokenExistence();
@@ -41,6 +43,9 @@
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
                 <li class="nav-item"><a id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
+                <li style="margin-left: auto; font-weight: bold;" class="nav-item ml-auto">
+                    <span class="navbar-text" id="welcomeName"></span>
+                </li>
             </ul>
         </div>
     </nav>
@@ -74,7 +79,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <label for="accountIBANadd">IBAN</label>
+                        <label for="accountIBANadd">IBAN (optional)</label>
                         <input type="text" class="form-control" id="accountIBANadd" placeholder="IBAN">
                         <div id="answer" style="color:red"></div>
                     </div>
