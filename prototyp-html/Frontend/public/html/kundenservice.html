@@ -55,15 +55,15 @@
         <div class="toggle-buttons">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-outline-primary active">
-                    <input type="radio" name="feedback_type" id="feedback" autocomplete="off" checked> Feedback
+                    <input type="radio" name="feedback_type" id="feedback" value="feedback" autocomplete="off" checked> Feedback
                 </label>
                 <label class="btn btn-outline-primary">
-                    <input type="radio" name="feedback_type" id="problem" autocomplete="off"> Problem
-                </label>
+                    <input type="radio" name="feedback_type" id="problem" value="problem" autocomplete="off"> Problem
+                </label>                
             </div>
         </div>
 
-        <form>
+        <form id="feedbackForm">
             <div class="form-group">
                 <label for="anrede">Anrede</label>
                 <select class="form-control" id="anrede">

@@ -8,10 +8,11 @@ CREATE TABLE Bankkonto (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     benutzer_id INTEGER NOT NULL,
     kontoname TEXT NOT NULL,
-    kontostand REAL DEFAULT 0,
+    kontostand DECIMAL(15,2) NOT NULL,
     iban TEXT NOT NULL,
-    FOREIGN KEY (benutzer_id) REFERENCES Benutzer(id)
+    FOREIGN KEY (benutzer_id) REFERENCES benutzer(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE Kategorie (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +27,7 @@ INSERT INTO Kategorie (name) VALUES
 ('Freizeit'), 
 ('Sonstiges');
 
-CREATE TABLE Kundenservice_new (
+CREATE TABLE Kundenservice (
     id INTEGER PRIMARY KEY,
     typ TEXT NOT NULL,
     anrede TEXT NOT NULL,
@@ -37,7 +38,7 @@ CREATE TABLE Kundenservice_new (
     FOREIGN KEY (user_id) REFERENCES Benutzer(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Transaktion (
+CREATE TABLE new_Transaktion (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     benutzer_id INTEGER NOT NULL,
     bankkonto_id_von INTEGER NOT NULL,
@@ -47,8 +48,8 @@ CREATE TABLE Transaktion (
     transaktions_datum TEXT NOT NULL,
     notiz TEXT NOT NULL,
     typ TEXT NOT NULL,
-    FOREIGN KEY (benutzer_id) REFERENCES Benutzer(id),
-    FOREIGN KEY (bankkonto_id_von) REFERENCES Bankkonto(id),
-    FOREIGN KEY (bankkonto_id_nach) REFERENCES Bankkonto(id),
-    FOREIGN KEY (kategorie_id) REFERENCES Kategorie(id)
+    FOREIGN KEY (benutzer_id) REFERENCES Benutzer(id) ON DELETE CASCADE,
+    FOREIGN KEY (bankkonto_id_von) REFERENCES Bankkonto(id) ON DELETE CASCADE,
+    FOREIGN KEY (bankkonto_id_nach) REFERENCES Bankkonto(id) ON DELETE CASCADE,
+    FOREIGN KEY (kategorie_id) REFERENCES Kategorie(id) ON DELETE CASCADE
 );

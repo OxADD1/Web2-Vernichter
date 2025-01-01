@@ -26,6 +26,8 @@ $(document).ready(function () {
             return;
         }
 
+        console.log("Ausgewählter Typ:", $('input[name="feedback_type"]:checked').val());
+
         // Payload erstellen
         const payload = {
             typ: typ,

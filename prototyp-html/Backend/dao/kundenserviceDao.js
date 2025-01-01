@@ -11,13 +11,13 @@ class KundenserviceDao {
         return this._conn;
     }
 
-    create(typ, anrede, name, email, nachricht, userId) {
+    create(typ, anrede, name, email, nachricht, user_id) {
         const benutzerDao = new BenutzerDao(this._conn);
 
         const sql = `
             INSERT INTO Kundenservice (typ, anrede, name, email, nachricht, user_id)
             VALUES (?, ?, ?, ?, ?, ?)`;
-        const params = [typ, anrede, name, email, nachricht, userId];
+        const params = [typ, anrede, name, email, nachricht, user_id];
     
         const statement = this._conn.prepare(sql);
         const result = statement.run(params);
@@ -26,10 +26,7 @@ class KundenserviceDao {
             throw new Error('Der Kundenservice-Eintrag konnte nicht erstellt werden.');
         }
     
-
-        result.benutzer = benutzerDao.loadById(result.userId);
-        delete result.benutzer_id;
-
+        const benutzer = benutzerDao.loadById(user_id);
 
         return {
             id: result.lastInsertRowid,
@@ -40,6 +37,7 @@ class KundenserviceDao {
             nachricht: nachricht,
             benutzer: benutzer
         };
+        
     }
     
 

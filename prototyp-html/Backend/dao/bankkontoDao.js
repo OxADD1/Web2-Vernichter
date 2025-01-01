@@ -31,9 +31,10 @@ class BankkontoDao {
     loadAllByUserId(userId) { // alle Konten für Kontoverwaltung und UserId aus Token
         const benutzerDao = new BenutzerDao(this._conn);
 
-        var sql = 'SELECT * FROM Benutzer';
+        var sql = 'SELECT * FROM Bankkonto WHERE benutzer_id=?';
         var statement = this._conn.prepare(sql);
-        var result = statement.all();
+        var result = statement.all(userId);
+
 
         if (helper.isArrayEmpty(result)) 
             return [];
@@ -55,13 +56,13 @@ class BankkontoDao {
         return result.cnt > 0;
     }
 
-    // Ein neues Bankkonto erstellen
     create(userId, kontoname = '', kontostand = 0.0, iban = '') {
         // Prüfen, ob der Kontoname für diesen Benutzer bereits existiert
         const sqlCheck = 'SELECT COUNT(id) AS cnt FROM Bankkonto WHERE kontoname = ? AND benutzer_id = ?';
         const checkStatement = this._conn.prepare(sqlCheck);
         const checkResult = checkStatement.get(kontoname, userId);
     
+        console.log('nach prüfung, vor create');
         if (checkResult.cnt > 0) {
             throw new Error(`Kontoname '${kontoname}' existiert bereits für diesen Benutzer.`);
         }
@@ -72,12 +73,14 @@ class BankkontoDao {
         const params = [userId, kontoname, kontostand, iban];
     
         const result = insertStatement.run(params);
+        console.log('result:', result);  // Für besseres Debugging
     
         if (result.changes !== 1) {
             throw new Error('Could not insert new bank account. Data: ' + params);
         }
     
-        return this.loadById(result.lastInsertRowid);
+        // Hier den userId mit übergeben
+        return this.loadById(result.lastInsertRowid, userId);  // <-- userId hinzugefügt
     }
     
 

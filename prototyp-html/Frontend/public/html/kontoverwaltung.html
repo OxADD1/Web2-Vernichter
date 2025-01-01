@@ -8,27 +8,30 @@
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/kontoverwaltung.css">
-    <script href="../js/logout.js"></script>
-    <script href="../js/token.js"></script>
-    <!-- Skripte für Bootstrap und Chart.js -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+    <!-- Richtiger Einsatz von src statt href -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" 
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
+        crossorigin="anonymous"></script>
+    <script src="../js/token.js"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
     <script src="../lib/Chart/chart.js"></script>
-    <!-- JavaScript zur Validierung des Eingabefeldes -->
+    <script src="../js/sessionHandling.js"></script>
     <script src="../js/decimalValidation.js"></script>
+    <script src="../js/kontoAjax.js"></script>
     
-    
+    <script>
+        validateTokenExistence();
+    </script>
 </head>
-
-<script>
-    validateTokenExistence();
-</script>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="./dashboard.html">Logo</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" 
+            data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+            aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -37,7 +40,7 @@
                 <li class="nav-item"><a class="nav-link" href="./transaktion.html">Neue Buchung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
-                <li class="nav-item"><a  id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
+                <li class="nav-item"><a id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
             </ul>
         </div>
     </nav>
@@ -47,61 +50,40 @@
 
         <div class="balance-box">
             <h4>Aktuelle Konten</h4>
-
-            <!-- Konto 1 -->
-            <div class="account-entry">
-                <span>Bargeld</span>
-                <div class="account-options">
-                    <span class="balance-amount">25,00€</span>
-
-                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteKontoModal">Löschen</button>
-
-                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editKontoModal">Bearbeiten</button>
-                </div>
-            </div>
-
-            <!-- Konto 2 -->
-            <div class="account-entry">
-                <span>Sparkasse</span>
-                <div class="account-options">
-                    <span class="balance-amount">2500,00€</span>
-
-                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteKontoModal">Löschen</button>
-
-                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editKontoModal">Bearbeiten</button>
-                </div>
-            </div>
+            <div id="accounts-container"></div>
         </div>
+
         <!-- Neues Konto hinzufügen (Ausklappbar) -->
         <div class="add-account-box">
-            <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#addAccountForm" aria-expanded="false" aria-controls="addAccountForm">
+            <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" 
+                data-target="#addAccountForm" aria-expanded="false" aria-controls="addAccountForm">
                 Konto hinzufügen
             </button>
 
             <div class="collapse mt-3" id="addAccountForm">
-                <form>
+                <form id="addAccountForm2">
                     <div class="form-group">
                         <label for="accountName">Kontoname</label>
                         <input type="text" class="form-control" id="accountName" placeholder="Kontoname">
                     </div>
                     <div class="form-group">
-                        <label for="accountBalance">Kontostand</label>
+                        <label for="wert">Kontostand</label>
                         <input type="text" class="form-control" id="wert" placeholder="0.00">
-                        <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
+                        <span id="error-message" class="error-message" style="display: none;">
+                            Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.
+                        </span>
                     </div>
                     <div class="form-group">
-                        <label for="accoutnIBAN">IBAN</label>
-                        <input type="text" class="form-control" id="accountIBAN" placeholder="IBAN">
-                    
+                        <label for="accountIBANadd">IBAN</label>
+                        <input type="text" class="form-control" id="accountIBANadd" placeholder="IBAN">
                         <div id="answer" style="color:red"></div>
-
                     </div>
-                    <button type="button" class="btn btn-success btn-block" 
-                    onclick="validateInput('wert', 'hinzufuegenModal')">
-                    Konto hinzufügen
-                </button>
+                    <!-- ID für den Button hinzufügen -->
+                    <button type="button" id="hinzufuegenButton" class="btn btn-success btn-block" 
+                        onclick="validateInput('wert', 'hinzufuegenModal', 'addAccountForm2')">
+                        Konto hinzufügen
+                    </button>
                 </form>
-
             </div>
         </div>
     </div>
@@ -111,61 +93,66 @@
         <p>Firma ©2025 | <a href="./kundenservice.html">Kontakt</a> | <a href="./impressum.html">Impressum</a></p>
     </footer>
 
-
     <!--Modal Konto Bearbeiten -->
-
-    <div class="modal fade" id="editKontoModal" tabindex="-1" role="dialog" aria-labelledby="editKontoLabel" aria-hidden="true">
+    <div class="modal fade" id="editKontoModal" tabindex="-1" role="dialog" 
+         aria-labelledby="editKontoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editKontoHeadLine">Konto bearbeiten</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">Konto bearbeiten</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="editKontoForm">
+                        <input type="hidden" id="editKontoId">
                         <div class="form-group">
-                            <label for="editKontoLabel">Kontoname</label>
+                            <label for="LabelLabel">Kontoname</label>
                             <input type="text" class="form-control" id="editKontoLabel" placeholder="Label">
                         </div>
                         <div class="form-group">
-                            <label for="editWertLabel">Kontostand</label>
+                            <label for="wertWert">Kontostand</label>
                             <input type="text" class="form-control" id="editWert" placeholder="0.00 €">
-                            <span id="error-message-edit" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
+                            <span id="error-message-edit" class="error-message" style="display: none;">
+                                Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.
+                            </span>
                         </div>
                         <div class="form-group">
-                            <label for="accoutnIBAN">IBAN</label>
-                            <input type="text" class="form-control" id="accountIBAN" placeholder="IBAN">
+                            <label for="IbanaccountIBANedit">IBAN</label>
+                            <input type="text" class="form-control" id="accountIBANedit" placeholder="IBAN">
                         </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" 
-                    onclick="validateInput('editWert', 'editSuccessModal')">
-                    Speichern
-                </button>
-                                </div>
+                    <!-- Button mit ID für Speichern -->
+                    <button type="button" id="editSaveButton" class="btn btn-primary" data-dismiss="modal"
+                        onclick="validateInput('editWert', 'editSuccessModal', 'editKontoForm')">
+                        Speichern
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-
     <!--Modal Konto loeschen-->
-    <div class="modal fade" id="deleteKontoModal" tabindex="-1" role="dialog" aria-labelledby="deleteKontoModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteKontoModal" tabindex="-1" role="dialog" 
+        aria-labelledby="deleteKontoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteKontoModalHeadLine">Konto löschen</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">Konto löschen</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <p>Möchten Sie dieses Konto endgültig löschen?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">Ja</button>
+                    <!-- Button für die Bestätigung des Löschens -->
+                    <button type="button" id="deleteConfirmButton" class="btn btn-danger">Ja</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Nein</button>
                 </div>
             </div>
@@ -173,16 +160,15 @@
     </div>
 
     <!-- Modal fuer hinzufuegen -->
-    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
+    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog" 
+        aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="hinzufuegenModalLabel">Neues Konto hinzufügen</h5>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">Neues Konto hinzufügen</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
                     </button>
-
                 </div>
                 <div class="modal-body">
                     Dein Konto wurde hinzugefügt.
@@ -192,16 +178,15 @@
     </div>
 
     <!-- Modal fuer bearbeiten erfolgreich -->
-    <div class="modal fade" id="editSuccessModal" tabindex="-1" role="dialog" aria-labelledby="editSuccessLabel" aria-hidden="true">
+    <div class="modal fade" id="editSuccessModal" tabindex="-1" role="dialog" 
+        aria-labelledby="editSuccessLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editSuccessLabel">Konto erfolgreich bearbeitet</h5>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">Konto erfolgreich bearbeitet</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
                     </button>
-
                 </div>
                 <div class="modal-body">
                     Dein Konto wurde erfolgreich bearbeitet.
@@ -209,9 +194,5 @@
             </div>
         </div>
     </div>
-
-    
-
 </body>
-
 </html>
