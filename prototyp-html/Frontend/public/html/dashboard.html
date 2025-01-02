@@ -16,6 +16,7 @@
     <script src="../js/decimalValidation.js"></script>
     <script src="../js/transactionAjax.js"></script>
     <script src="../js/welcomeName.js"></script>
+    <script src="../js/fillButton.js"></script>
 </head>
 
 <script>
@@ -91,13 +92,13 @@
         <div class="col-md-4">
             <label for="categoryFilter">Kategorie:</label>
             <select class="form-control" id="categoryFilter">
-                <option value="Alle">Alle</option>
+                <!--<option value="Alle">Alle</option>
                 <option value="Transport">Transport</option>
                 <option value="Bildung">Bildung</option>
                 <option value="Miete">Miete</option>
                 <option value="Lebensmittel">Lebensmittel</option>
                 <option value="Freizeit">Freizeit</option>
-                <option value="Sonstiges">Sonstiges</option>
+                <option value="Sonstiges">Sonstiges</option>-->
             </select>
         </div>
         <div class="col-md-2 d-flex align-items-end mt-3">
@@ -152,12 +153,12 @@
                         <div class="form-group">
                             <label for="editKategorie">Kategorie</label>
                             <select class="form-control" id="editKategorie">
-                                <option value="Transport">Transport</option>
+                                <!--<option value="Transport">Transport</option>
                                 <option value="Bildung">Bildung</option>
                                 <option value="Miete">Miete</option>
                                 <option value="Lebensmittel">Lebensmittel</option>
                                 <option value="Freizeit">Freizeit</option>
-                                <option value="Sonstiges">Sonstiges</option>
+                                <option value="Sonstiges">Sonstiges</option>-->
                             </select>
                         </div>
                         <div id="answer"></div>
@@ -198,44 +199,113 @@
 
     <!-- Diagramme -->
     <script>
-        var ctx = document.getElementById('chart').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Einnahmen', 'Ausgaben'],
-                datasets: [{
-                    label: 'Finanzen',
 
-                    data: [300.46, 200.84],
+        // Einnahmen und Ausgaben abrufen
+     function fetchBalanceData() {
+         $.ajax({
+            url: 'http://localhost:8000/api/transaktion/kontostand',
+            method: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            dataType: 'json',
+            headers: getAuthorizationObject()
+                 
+         }).done( function(data)  {
+            updateBalanceChart(data);
+         }).fail( function(err) {
+            console.error('Fehler beim Abrufen der Einnahmen und Ausgaben:', err);
+         });
+    }
+     
+     // Ausgaben nach Kategorien abrufen
+     function fetchCategoryData() {
+         $.ajax({
+            url: 'http://localhost:8000/api/transaktion/ausgabenNachKategorie',
+            method: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            dataType: 'json',
+            headers: getAuthorizationObject()
 
-                    backgroundColor: ['#28a745', '#dc3545']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
-            }
+         }).done( function(data) {
+            updateCategoryChart(data);
+         }).fail(function(err) {
+            console.error('Fehler beim Abrufen der Kategorien:', err);
+         });
+     }
+     
+     // Einnahmen/Ausgaben Diagramm aktualisieren
+     function updateBalanceChart(balanceData) {
+         const { einnahmen, ausgaben } = balanceData;
+         chart.data.datasets[0].data = [einnahmen, Math.abs(ausgaben)];
+         chart.update();
+     }
+     
+     // Kategorien-Diagramm aktualisieren
+     function updateCategoryChart(categoryData) {
+         const labels = categoryData.map(item => item.kategorie);
+         const values = categoryData.map(item => Math.abs(item.betrag));
+         categoryChart.data.labels = labels;
+         categoryChart.data.datasets[0].data = values;
+         categoryChart.update();
+     }
+     
+     // Seite initialisieren
+     $(document).ready(function() {
+         fetchBalanceData();
+         fetchCategoryData();
+     });
+     
+     // Diagramme initialisieren
+     const ctx = document.getElementById('chart').getContext('2d');
+     const chart = new Chart(ctx, {
+         type: 'doughnut',
+         data: {
+             labels: ['Einnahmen', 'Ausgaben'],
+             datasets: [{
+                 data: [0, 0], // Dynamisch aktualisiert
+                 backgroundColor: ['#28a745', '#dc3545']
+             }]
+         },
+         options: {
+             responsive: true,
+             maintainAspectRatio: true
+         }
+     });
+     
+     const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+     const categoryChart = new Chart(ctxCategory, {
+         type: 'doughnut',
+         data: {
+             labels: [], // Dynamisch aktualisiert
+             datasets: [{
+                 data: [], // Dynamisch aktualisiert
+                 backgroundColor: ['#007bff', '#ffc107', '#17a2b8', '#fd7e14', '#20c997', '#6f42c1']
+             }]
+         },
+         options: {
+             responsive: true,
+             maintainAspectRatio: true
+         }
+     });
+
+     $(document).ready(function() {
+            $.ajax({
+                url: 'http://localhost:8000/api/kategorie/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+            }).done(function(response) {
+                console.log('Kategorie geladen in Buchungen: ', response);
+                fillButton(response, ["categoryFilter", "editKategorie"], "Kategorien", "name");
+            }).fail(function(jqXHR) {
+                console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
+            });
         });
-
-        var ctxCategory = document.getElementById('categoryChart').getContext('2d');
-        var categoryChart = new Chart(ctxCategory, {
-            type: 'doughnut',
-            data: {
-                labels: ['Lebensmittel', 'Miete', 'Freizeit'],
-                datasets: [{
-                    label: 'Kategorien',
-
-                    data: [150.59, 100.43, 50.44],
-
-                    backgroundColor: ['#007bff', '#ffc107', '#17a2b8']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
-            }
-        });
-    </script>
+    
+     
+         </script>
 
     
 
