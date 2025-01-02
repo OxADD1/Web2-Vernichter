@@ -1,5 +1,6 @@
 const helper = require('../helper.js');
 const TransaktionDao = require('../dao/transaktionDao.js');
+const BankkontoDao = require('../dao/bankkontoDao.js');
 const validateToken = require('../tokenHandling/validateToken.js');
 const express = require('express');
 var serviceRouter = express.Router();
@@ -96,7 +97,9 @@ serviceRouter.get('/transaktion/kontostand', validateToken, function(request, re
 
 
 // schreibe eine transaktion vom benutzer 
-serviceRouter.post('/transaktion', validateToken, (req, res) => {
+/*serviceRouter.post('/transaktion', validateToken, (req, res) => {
+    const bankkontoDao = new BankkontoDao(req.app.locals.dbConnection);
+
     const userId = req.userId; // Benutzer-ID aus dem Token
     const { bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ } = req.body;
 
@@ -104,11 +107,118 @@ serviceRouter.post('/transaktion', validateToken, (req, res) => {
 
     try {
         const neueTransaktion = transaktionDao.create(userId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ);
+        const updateBankkonto = bankkontoDao.update(bankkontoIdVon,userId,)
         res.status(201).json(neueTransaktion); // Erfolgreich erstellt
     } catch (ex) {
         res.status(400).json({ fehler: true, nachricht: ex.message });
     }
+
+
+});*/
+
+// Neue Transaktion erstellen + Kontostände aktualisieren
+serviceRouter.post('/transaktion', validateToken, (req, res) => {
+    const transaktionDao = new TransaktionDao(req.app.locals.dbConnection);
+    const bankkontoDao = new BankkontoDao(req.app.locals.dbConnection);
+    
+    const userId = req.userId; // Benutzer-ID aus dem Token
+    const {
+        bankkonto_id_von,  // z.B. "1" => ID des Quellkontos
+        bankkonto_id_nach, // z.B. "2" => ID des Zielkontos (für Umbuchung)
+        kategorie_id,
+        wert,              // z.B. 100 oder -50
+        transaktions_datum,
+        notiz,
+        typ                // 'ausgabe', 'einnahme' oder 'umbuchung'
+    } = req.body;
+
+    try {
+        
+        // Dann das Insert absetzen mit kategorieId
+        
+        // 1) Neue Transaktion in der DB anlegen
+        const neueTransaktion = transaktionDao.create(
+            userId,
+            bankkonto_id_von, 
+            bankkonto_id_nach,
+            kategorie_id, 
+            wert,
+            transaktions_datum, 
+            notiz, 
+            typ
+        );
+
+        // 2) Kontostände anpassen (Ausgabe, Einnahme, Umbuchung)
+        if (typ === 'ausgabe') {
+            // Nur das "von"-Konto wird belastet (= Kontostand - wert)
+            let kontoVon = bankkontoDao.loadById(bankkonto_id_von, userId);
+            let aktuellerStand = parseFloat(kontoVon.kontostand);
+            let neuerStand = aktuellerStand - parseFloat(wert);
+
+            bankkontoDao.update(
+                bankkonto_id_von,
+                userId,
+                kontoVon.kontoname,
+                neuerStand,
+                kontoVon.iban
+            );
+
+        } else if (typ === 'einnahme') {
+            // Nur das "von"-Konto (in dem Fall dein Zielkonto) bekommt + wert
+            // (Manchmal nennt man es bankkonto_id_von oder bankkonto_id_nach – je nach Logik)
+            let kontoVon = bankkontoDao.loadById(bankkonto_id_von, userId);
+            let aktuellerStand = parseFloat(kontoVon.kontostand);
+            let neuerStand = aktuellerStand + parseFloat(wert);
+
+            bankkontoDao.update(
+                bankkonto_id_von,
+                userId,
+                kontoVon.kontoname,
+                neuerStand,
+                kontoVon.iban
+            );
+
+        } else if (typ === 'umbuchung') {
+            console.log("umbuchung service if aufgerufen");
+            // Umbuchung: Vom Quellkonto abziehen, dem Zielkonto gutschreiben
+            let kontoVon = bankkontoDao.loadById(bankkonto_id_von, userId);
+            let standVon = parseFloat(kontoVon.kontostand);
+            let neuerStandVon = standVon - parseFloat(wert);
+
+            bankkontoDao.update(
+                bankkonto_id_von,
+                userId,
+                kontoVon.kontoname,
+                neuerStandVon,
+                kontoVon.iban
+            );
+
+            // Konto "nach" nur aktualisieren, wenn bankkonto_id_nach != null
+            if (bankkonto_id_nach) {
+                let kontoNach = bankkontoDao.loadById(bankkonto_id_nach, userId);
+                let standNach = parseFloat(kontoNach.kontostand);
+                let neuerStandNach = standNach + parseFloat(wert);
+
+                bankkontoDao.update(
+                    bankkonto_id_nach,
+                    userId,
+                    kontoNach.kontoname,
+                    neuerStandNach,
+                    kontoNach.iban
+                );
+            }
+        }
+
+        // 3) JSON-Antwort mit der neu erstellten Transaktion zurückgeben
+        res.status(201).json(neueTransaktion);
+
+    } catch (ex) {
+        console.error('Fehler beim Erstellen der Transaktion:', ex.message);
+        res.status(400).json({ fehler: true, nachricht: ex.message });
+    }
 });
+
+
 
 
 // ändere eine transaktion vom benutzer

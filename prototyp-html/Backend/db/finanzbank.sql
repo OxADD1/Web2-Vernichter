@@ -38,12 +38,12 @@ CREATE TABLE Kundenservice (
     FOREIGN KEY (user_id) REFERENCES Benutzer(id) ON DELETE CASCADE
 );
 
-CREATE TABLE new_Transaktion (
+CREATE TABLE Transaktion (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     benutzer_id INTEGER NOT NULL,
     bankkonto_id_von INTEGER NOT NULL,
     bankkonto_id_nach INTEGER DEFAULT NULL,
-    kategorie_id INTEGER NOT NULL,
+    kategorie_id INTEGER DEFAULT 5,        
     wert REAL NOT NULL,
     transaktions_datum TEXT NOT NULL,
     notiz TEXT NOT NULL,
@@ -53,3 +53,4 @@ CREATE TABLE new_Transaktion (
     FOREIGN KEY (bankkonto_id_nach) REFERENCES Bankkonto(id) ON DELETE CASCADE,
     FOREIGN KEY (kategorie_id) REFERENCES Kategorie(id) ON DELETE CASCADE
 );
+

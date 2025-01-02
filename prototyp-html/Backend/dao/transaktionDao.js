@@ -28,7 +28,7 @@ class TransaktionDao {
         if (helper.isUndefined(result)) 
             throw new Error('No Record found by id=' + id);
 
-        result.benutzer = benutzerDao.loadById(result.userId); // objekt in objekt
+        result.benutzer = benutzerDao.loadById(result.benutzer_id);        
         delete result.benutzer_id;
     
         result.kategorie = kategorieDao.loadById(result.kategorie_id);
@@ -171,7 +171,7 @@ class TransaktionDao {
         }
     
         // Lade und gib das neu erstellte Bankkonto zurück
-        return this.loadById(result.lastInsertRowid);
+        return this.loadById(result.lastInsertRowid, userId);
     }
     
 
