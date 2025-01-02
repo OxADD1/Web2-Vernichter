@@ -27,20 +27,7 @@ serviceRouter.get('/transaktion/vonBenutzer', validateToken, function(request, r
 });
 
 
-// hole eine transaktion vom benutzer
-serviceRouter.get('/transaktion/:id', validateToken, function(request, response) {
-    console.log('Service Transaktion: Client requests a transaction with id=' + request.params.id);
-    const transaktionDao = new TransaktionDao(request.app.locals.dbConnection);
 
-    try {
-        var result = transaktionDao.loadById(request.params.id, request.userId);
-        console.log('Service Transaktion: Transaction loaded with id=' + result.id);
-        response.status(200).json(result);
-    } catch (ex) {
-        console.error('Service Transaktion: Error loading transaction. Exception occurred: ' + ex.message);
-        response.status(404).json({ 'fehler': true, 'nachricht': ex.message });
-    }
-});
 
 
 // hole gefilterte transaktion vom benutzer
@@ -265,7 +252,20 @@ serviceRouter.delete('/transaktion/:id', validateToken, function(request, respon
     }
 });
 
+// hole eine transaktion vom benutzer
+serviceRouter.get('/transaktion/:id', validateToken, function(request, response) {
+    console.log('Service Transaktion: Client requests a transaction with id=' + request.params.id);
+    const transaktionDao = new TransaktionDao(request.app.locals.dbConnection);
 
+    try {
+        var result = transaktionDao.loadById(request.params.id, request.userId);
+        console.log('Service Transaktion: Transaction loaded with id=' + result.id);
+        response.status(200).json(result);
+    } catch (ex) {
+        console.error('Service Transaktion: Error loading transaction. Exception occurred: ' + ex.message);
+        response.status(404).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
 
 
 

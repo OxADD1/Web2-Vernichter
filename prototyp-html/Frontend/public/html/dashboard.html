@@ -12,9 +12,7 @@
     <script src="../js/sessionHandling.js"></script>
     <script src="../js/token.js"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
-    <script src="../lib/Chart/chart.js"></script>
     <script src="../js/decimalValidation.js"></script>
-    <script src="../js/transactionAjax.js"></script>
     <script src="../js/welcomeName.js"></script>
     <script src="../js/fillButton.js"></script>
 </head>
@@ -49,12 +47,12 @@
         <div class="balance-expense-wrapper">
             <div class="balance-box">
                 <h4>Gesamtvermögen</h4>
-                <p class="balance-amount">678,91 €</p>
+                <p id="balanceAmount" class="balance-amount"></p>
             </div>
 
             <div class="total-expense-box">
                 <h4>Ausgaben nach Kategorien</h4>
-                <p class="total-expense-amount">-300,00 €</p>
+                <p id="expenseCategory" class="total-expense-amount"></p>
             </div>
         </div>
 
@@ -63,7 +61,7 @@
             <div class="col-md-6 d-flex flex-column align-items-center">
                 <div class="card chart-container">
                     <div class="card-body">
-                        <canvas id="chart"></canvas>
+                        <canvas id="capitalCanvas"></canvas>
                         <p class="text-center mt-2">Einnahmen und Ausgaben</p>
                     </div>
                 </div>
@@ -196,99 +194,11 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/transaktionNEUNEU.js"></script>
 
     <!-- Diagramme -->
     <script>
-
-        // Einnahmen und Ausgaben abrufen
-     function fetchBalanceData() {
-         $.ajax({
-            url: 'http://localhost:8000/api/transaktion/kontostand',
-            method: 'GET',
-            contentType: 'application/json; charset=utf-8',
-            cache: false,
-            dataType: 'json',
-            headers: getAuthorizationObject()
-                 
-         }).done( function(data)  {
-            updateBalanceChart(data);
-         }).fail( function(err) {
-            console.error('Fehler beim Abrufen der Einnahmen und Ausgaben:', err);
-         });
-    }
-     
-     // Ausgaben nach Kategorien abrufen
-     function fetchCategoryData() {
-         $.ajax({
-            url: 'http://localhost:8000/api/transaktion/ausgabenNachKategorie',
-            method: 'GET',
-            contentType: 'application/json; charset=utf-8',
-            cache: false,
-            dataType: 'json',
-            headers: getAuthorizationObject()
-
-         }).done( function(data) {
-            updateCategoryChart(data);
-         }).fail(function(err) {
-            console.error('Fehler beim Abrufen der Kategorien:', err);
-         });
-     }
-     
-     // Einnahmen/Ausgaben Diagramm aktualisieren
-     function updateBalanceChart(balanceData) {
-         const { einnahmen, ausgaben } = balanceData;
-         chart.data.datasets[0].data = [einnahmen, Math.abs(ausgaben)];
-         chart.update();
-     }
-     
-     // Kategorien-Diagramm aktualisieren
-     function updateCategoryChart(categoryData) {
-         const labels = categoryData.map(item => item.kategorie);
-         const values = categoryData.map(item => Math.abs(item.betrag));
-         categoryChart.data.labels = labels;
-         categoryChart.data.datasets[0].data = values;
-         categoryChart.update();
-     }
-     
-     // Seite initialisieren
-     $(document).ready(function() {
-         fetchBalanceData();
-         fetchCategoryData();
-     });
-     
-     // Diagramme initialisieren
-     const ctx = document.getElementById('chart').getContext('2d');
-     const chart = new Chart(ctx, {
-         type: 'doughnut',
-         data: {
-             labels: ['Einnahmen', 'Ausgaben'],
-             datasets: [{
-                 data: [0, 0], // Dynamisch aktualisiert
-                 backgroundColor: ['#28a745', '#dc3545']
-             }]
-         },
-         options: {
-             responsive: true,
-             maintainAspectRatio: true
-         }
-     });
-     
-     const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-     const categoryChart = new Chart(ctxCategory, {
-         type: 'doughnut',
-         data: {
-             labels: [], // Dynamisch aktualisiert
-             datasets: [{
-                 data: [], // Dynamisch aktualisiert
-                 backgroundColor: ['#007bff', '#ffc107', '#17a2b8', '#fd7e14', '#20c997', '#6f42c1']
-             }]
-         },
-         options: {
-             responsive: true,
-             maintainAspectRatio: true
-         }
-     });
-
      $(document).ready(function() {
             $.ajax({
                 url: 'http://localhost:8000/api/kategorie/alle',
@@ -302,12 +212,38 @@
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
             });
+
+            /*function loadGesamtvermoegen() {
+            $.ajax({
+                url: 'http://localhost:8000/api/bankkonto/gesamtvermoegen',  //  Route
+                method: 'GET',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                headers: getAuthorizationObject() // Falls einen Token brauchst
+            })
+            .done(function(response) {
+                // response sollte { gesamtvermoegen: irgendwas } enthalten
+                console.log('Gesamtvermögen geladen:', response.gesamtvermoegen);
+                // Wert ins <p>-Element schreiben
+                $('#balanceAmount').text(response.gesamtvermoegen.toFixed(2) + ' €');
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Fehler beim Laden des Gesamtvermögens:', errorThrown);
+            });
+        }
+
+        // Rufe es beim Laden der Seite auf (oder wann immer du möchtest)
+        loadGesamtvermoegen();
+            */
+
         });
     
-     
-         </script>
 
-    
+
+    </script>
+
+
+
 
 </body>
 
