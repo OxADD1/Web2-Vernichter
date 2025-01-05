@@ -12,9 +12,9 @@
     <script src="../js/sessionHandling.js"></script>
     <script src="../js/token.js"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script>
-    <script src="../lib/Chart/chart.js"></script>
     <script src="../js/decimalValidation.js"></script>
-    <script src="../js/transactionAjax.js"></script>
+    <script src="../js/welcomeName.js"></script>
+    <script src="../js/fillButton.js"></script>
 </head>
 
 <script>
@@ -35,6 +35,9 @@
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
                 <li class="nav-item"><a id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
+                <li style="margin-left: auto; font-weight: bold;" class="nav-item ml-auto">
+                    <span class="navbar-text" id="welcomeName"></span>
+                </li>
             </ul>
         </div>
     </nav>
@@ -44,12 +47,12 @@
         <div class="balance-expense-wrapper">
             <div class="balance-box">
                 <h4>Gesamtvermögen</h4>
-                <p class="balance-amount">678,91 €</p>
+                <p id="balanceAmount" class="balance-amount"></p>
             </div>
 
             <div class="total-expense-box">
                 <h4>Ausgaben nach Kategorien</h4>
-                <p class="total-expense-amount">-300,00 €</p>
+                <p id="expenseCategory" class="total-expense-amount"></p>
             </div>
         </div>
 
@@ -58,7 +61,7 @@
             <div class="col-md-6 d-flex flex-column align-items-center">
                 <div class="card chart-container">
                     <div class="card-body">
-                        <canvas id="chart"></canvas>
+                        <canvas id="capitalCanvas"></canvas>
                         <p class="text-center mt-2">Einnahmen und Ausgaben</p>
                     </div>
                 </div>
@@ -87,13 +90,13 @@
         <div class="col-md-4">
             <label for="categoryFilter">Kategorie:</label>
             <select class="form-control" id="categoryFilter">
-                <option value="Alle">Alle</option>
+                <!--<option value="Alle">Alle</option>
                 <option value="Transport">Transport</option>
                 <option value="Bildung">Bildung</option>
                 <option value="Miete">Miete</option>
                 <option value="Lebensmittel">Lebensmittel</option>
                 <option value="Freizeit">Freizeit</option>
-                <option value="Sonstiges">Sonstiges</option>
+                <option value="Sonstiges">Sonstiges</option>-->
             </select>
         </div>
         <div class="col-md-2 d-flex align-items-end mt-3">
@@ -148,12 +151,12 @@
                         <div class="form-group">
                             <label for="editKategorie">Kategorie</label>
                             <select class="form-control" id="editKategorie">
-                                <option value="Transport">Transport</option>
+                                <!--<option value="Transport">Transport</option>
                                 <option value="Bildung">Bildung</option>
                                 <option value="Miete">Miete</option>
                                 <option value="Lebensmittel">Lebensmittel</option>
                                 <option value="Freizeit">Freizeit</option>
-                                <option value="Sonstiges">Sonstiges</option>
+                                <option value="Sonstiges">Sonstiges</option>-->
                             </select>
                         </div>
                         <div id="answer"></div>
@@ -191,9 +194,12 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/transaktionNEUNEU.js"></script>
 
     <!-- Diagramme -->
     <script>
+<<<<<<< HEAD
 
    // Einnahmen und Ausgaben abrufen
 function fetchBalanceData() {
@@ -278,9 +284,53 @@ const categoryChart = new Chart(ctxCategory, {
     }
 });
 
+=======
+     $(document).ready(function() {
+            $.ajax({
+                url: 'http://localhost:8000/api/kategorie/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+            }).done(function(response) {
+                console.log('Kategorie geladen in Buchungen: ', response);
+                fillButton(response, ["categoryFilter", "editKategorie"], "Kategorien", "name");
+            }).fail(function(jqXHR) {
+                console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
+            });
+
+            /*function loadGesamtvermoegen() {
+            $.ajax({
+                url: 'http://localhost:8000/api/bankkonto/gesamtvermoegen',  //  Route
+                method: 'GET',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                headers: getAuthorizationObject() // Falls einen Token brauchst
+            })
+            .done(function(response) {
+                // response sollte { gesamtvermoegen: irgendwas } enthalten
+                console.log('Gesamtvermögen geladen:', response.gesamtvermoegen);
+                // Wert ins <p>-Element schreiben
+                $('#balanceAmount').text(response.gesamtvermoegen.toFixed(2) + ' €');
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Fehler beim Laden des Gesamtvermögens:', errorThrown);
+            });
+        }
+
+        // Rufe es beim Laden der Seite auf (oder wann immer du möchtest)
+        loadGesamtvermoegen();
+            */
+
+        });
+    
+
+
+>>>>>>> e4fe1cda7e69f9966624c4fd384caa6cf81314e6
     </script>
 
-    
+
+
 
 </body>
 

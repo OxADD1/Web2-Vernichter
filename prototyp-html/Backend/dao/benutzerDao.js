@@ -11,16 +11,21 @@ class BenutzerDao {
     }
 
     // Lädt einen Benutzer anhand seiner ID (z.B. für Authentifizierung/Prüfungen)
-    loadById(id) {
+    loadById(userId) {
         const sql = 'SELECT * FROM Benutzer WHERE id = ?';
         const statement = this._conn.prepare(sql);
-        const result = statement.get(id);
-
-        if (helper.isUndefined(result))
-            throw new Error('No Record found by id=' + id);
-
+        const result = statement.get(userId);
+    
+        console.log('Result from DB:', result); // Debug-Ausgabe
+    
+        if (helper.isUndefined(result)) {
+            console.error('No record found for userId:', userId);
+            throw new Error('No Record found by id=' + userId);
+        }        
+        
         return result;
     }
+    
 
 
     /*loadAll() {

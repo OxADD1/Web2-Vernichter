@@ -8,12 +8,15 @@
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css"> <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/transaktion.css">
-    <script href="../js/token.js"></script>
-    <script href="../js/logout.js"></script>
+    <script src="../js/token.js"></script>
+    <script src="../js/sessionHandling.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script> <!-- Bootstrap 4 JS -->
     <!-- JavaScript zur Validierung des Eingabefeldes -->
     <script src="../js/decimalValidation.js"></script>
+    <script src="../js/welcomeName.js"></script>
+    <script src="../js/neueBuchungAjax.js"></script>
+    <script src="../js/fillButton.js"></script>
 </head>
 
 <script>
@@ -34,12 +37,15 @@
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
                 <li class="nav-item"><a  id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
+                <li style="margin-left: auto; font-weight: bold;" class="nav-item ml-auto">
+                    <span class="navbar-text" id="welcomeName"></span>
+                </li>
             </ul>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <h3>Neue Transaktion</h3>
+        <h3>Neue Buchung</h3>
 
         <!-- Transaktion Typ Auswahl -->
         <div class="btn-group btn-group-toggle mb-3 trans_btns" data-toggle="buttons">
@@ -56,14 +62,14 @@
 
         <!-- Formular für Transaktionsdetails -->
     <div id="transaktionForm" class="container mt-4">
-        <h4>Transaktionsdetails</h4>    
+        <h4>Buchungsdetails</h4>    
         <form id="transaktionForm">
             <div class="form-group">
                 <label for="konto">Konto</label>
                 <select class="form-control" id="konto">
-                    <option>Bargeld</option>
+                    <!--<option>Bargeld</option>
                     <option>Girokonto</option>
-                    <option>Kreditkarte</option>
+                    <option>Kreditkarte</option>-->
                 </select>
             </div>
 
@@ -76,15 +82,15 @@
             <div class="form-group">
                 <label for="kategorie">Kategorie</label>
                 <select class="form-control" id="kategorie">
-                    <option>Lebensmittel</option>
+                    <!--<option>Lebensmittel</option>
                     <option>Miete</option>
-                    <option>Freizeit</option>
+                    <option>Freizeit</option>-->
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="notiz">Notiz hinzufügen</label>
-                <input type="text" class="form-control" id="notiz" placeholder="Optional">
+                <label for="notiz">Betreff der Buchung</label>
+                <input type="text" class="form-control" id="notiz" placeholder="z.B. Weihnachtsgeschenk für Klaus">
             </div>
 
             <div class="form-group">
@@ -94,7 +100,7 @@
 
             <div id="answer" style="color:red"></div>
 
-            <button type="button" class="btn btn-primary btn-add" onclick="validateInput('wert', 'hinzufuegenModal', 'transaktionForm')">
+            <button type="button" id="einAusButton" class="btn btn-primary btn-add" onclick="validateInput('wert', 'hinzufuegenModal', 'transaktionForm')">
                 Hinzufügen
             </button>
         </form>
@@ -125,17 +131,17 @@
                 <div class="form-group">
                     <label for="konto1">Von Konto</label>
                     <select class="form-control" id="konto1">
-                        <option>Bargeld</option>
+                        <!--<option>Bargeld</option>
                         <option>Girokonto</option>
-                        <option>Kreditkarte</option>
+                        <option>Kreditkarte</option>-->
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="konto2">Zu Konto</label>
                     <select class="form-control" id="konto2">
-                        <option>Bargeld</option>
+                        <!--<option>Bargeld</option>
                         <option>Girokonto</option>
-                        <option>Kreditkarte</option>
+                        <option>Kreditkarte</option>-->
                     </select>
                 </div>
 
@@ -146,7 +152,7 @@
 
                 <div class="form-group">
                     <label for="notizUmbuchung">Notiz hinzufügen</label>
-                    <input type="text" class="form-control" id="notizUmbuchung" placeholder="Optional">
+                    <input type="text" class="form-control" id="notizUmbuchung" placeholder="Pflicht">
                 </div>
 
                 <div class="form-group">
@@ -154,7 +160,7 @@
                     <input type="date" class="form-control" id="datumUmbuchung">
                 </div>
 
-                <button type="button" class="btn btn-primary btn-add" onclick="validateInput('wertUmbuchung', 'hinzufuegenModal', 'umbuchungsForm2')">
+                <button type="button" id="umbuchungButton" class="btn btn-primary btn-add" onclick="validateInput('wertUmbuchung', 'hinzufuegenModal', 'umbuchungsForm2')">
                     Hinzufügen
                 </button>
 
@@ -193,6 +199,38 @@
         document.getElementById('umbuchungBtn').addEventListener('click', function() {
             alert('Die Umbuchung wurde erfolgreich durchgeführt.');
         });*/
+
+        $(document).ready(function() {
+            $.ajax({
+               url: 'http://localhost:8000/api/bankkonto/alle',
+               method: 'GET',
+               contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+                headers: getAuthorizationObject() 
+            }).done(function(response) {
+                console.log('Konten geladen in Buchungen: ', response);
+                fillButton(response, ["konto", "konto1", "konto2"], "Konto", "kontoname");
+            }).fail(function (jqXHR) {
+                console.error("Fehler beim Laden der Konten: ", jqXHR.response);
+            });
+
+
+            $.ajax({
+                url: 'http://localhost:8000/api/kategorie/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+            }).done(function(response) {
+                console.log('Kategorie geladen in Buchungen: ', response);
+                fillButton(response, ["kategorie"], "Kategorien", "name");
+            }).fail(function(jqXHR) {
+                console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
+            });
+        });
+
+
     </script> 
 
 

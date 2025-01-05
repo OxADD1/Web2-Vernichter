@@ -28,6 +28,19 @@ class BankkontoDao {
         return result;
     }
 
+    getGesamtvermoegenByUserId(userId) {
+        const sql = `
+            SELECT SUM(kontostand) AS gesamt
+            FROM Bankkonto
+            WHERE benutzer_id = ?
+        `;
+        const statement = this._conn.prepare(sql);
+        const row = statement.get(userId);
+    
+        return row.gesamt || 0; // falls NULL, auf 0 fallbacken
+    }
+    
+
     loadAllByUserId(userId) { // alle Konten für Kontoverwaltung und UserId aus Token
         const benutzerDao = new BenutzerDao(this._conn);
 
@@ -116,6 +129,8 @@ class BankkontoDao {
         return this.loadById(id, userId);
     }
 
+
+    
 
     // Ein Bankkonto löschen
     delete(id, userId) {

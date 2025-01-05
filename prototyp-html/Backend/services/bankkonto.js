@@ -21,6 +21,15 @@ serviceRouter.get('/bankkonto/gib/:id', validateToken, function(request, respons
     }
 });
 
+serviceRouter.get('/bankkonto/gesamtvermoegen', validateToken, function(req, res) {
+    const bankkontoDao = new BankkontoDao(req.app.locals.dbConnection);
+    try {
+        const summe = bankkontoDao.getGesamtvermoegenByUserId(req.userId);
+        res.status(200).json({ gesamtvermoegen: summe });
+    } catch (ex) {
+        res.status(400).json({ fehler: true, nachricht: ex.message });
+    }
+});
 
 
 // Alle Bankkonten des eingeloggten Benutzers laden

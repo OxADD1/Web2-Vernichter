@@ -1,6 +1,7 @@
 const helper = require('../helper.js');
 const BenutzerDao = require('../dao/benutzerDao.js');
 const createToken = require('../tokenHandling/createToken.js');
+const validateToken = require('../tokenHandling/validateToken.js');
 const express = require('express');
 var serviceRouter = express.Router();
 
@@ -20,23 +21,6 @@ console.log('- Service Benutzer');
  * - POST für Bearbeitung verwendet, aber auch um Informationen wie Token zu erstellen, was bei Login passiert.
  */
 
-
-
-// Benutzer-Daten abrufen
-serviceRouter.get('/benutzer/:id', function(request, response) {
-    console.log('Service Benutzer: Client requested user data for id=' + request.params.id);
-
-    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
-    try {
-        // Benutzer-Daten laden
-        var obj = benutzerDao.loadById(request.params.id);
-        console.log('Service Benutzer: User data loaded successfully');
-        response.status(200).json(obj);
-    } catch (ex) {
-        console.error('Service Benutzer: Error loading user data. Exception: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
-});
 
 
 
@@ -121,20 +105,24 @@ serviceRouter.post('/benutzer/login', function(request, response) {
  * Anforderungen:
  *  - ID muss gültig sein.
  */
-serviceRouter.get('/benutzer/:id', function(request, response) {
-    console.log('Service Benutzer: Client requested user data for id=' + request.params.id);
+serviceRouter.get('/benutzer/me', validateToken, function(request, response) {
+    console.log('Route /benutzer/me aufgerufen');
+    console.log('Token-UserId:', request.userId);
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
         // Benutzer-Daten laden
-        var obj = benutzerDao.loadById(request.params.id);
-        console.log('Service Benutzer: User data loaded successfully');
-        response.status(200).json(obj); // Erfolgreiche Rückgabe der Benutzer-Daten
+        var obj = benutzerDao.loadById(request.userId);
+        console.log("hier ist das obj:", obj);
+        // Rückgabe der Benutzer-Daten als JSON
+        delete obj.passwort; // Entfernt das Passwort aus dem Objekt
+        response.status(200).json(obj); // Diese Zeile gibt die JSON-Antwort zurück
     } catch (ex) {
-        console.error('Service Benutzer: Error loading user data. Exception: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message }); // Fehlerantwort
+        console.error('Fehler beim Laden der Benutzerdaten:', ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });
+
 
 
 
