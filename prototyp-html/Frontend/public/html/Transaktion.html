@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="notizUmbuchung">Notiz hinzufügen</label>
+                    <label for="notizUmbuchung">Betreff der Umbuchung</label>
                     <input type="text" class="form-control" id="notizUmbuchung" placeholder="Pflicht">
                 </div>
 
@@ -210,7 +210,7 @@
                 headers: getAuthorizationObject() 
             }).done(function(response) {
                 console.log('Konten geladen in Buchungen: ', response);
-                fillButton(response, ["konto", "konto1", "konto2"], "Konto", "kontoname");
+                fillButton(response, ["konto", "konto1", "konto2"], "Bitte wählen Sie ein Konto", "kontoname");
             }).fail(function (jqXHR) {
                 console.error("Fehler beim Laden der Konten: ", jqXHR.response);
             });
@@ -224,7 +224,7 @@
                 dataType: 'json',
             }).done(function(response) {
                 console.log('Kategorie geladen in Buchungen: ', response);
-                fillButton(response, ["kategorie"], "Kategorien", "name");
+                fillButton(response, ["kategorie"], "Bitte wählen Sie eine Kategorie", "name");
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
             });
