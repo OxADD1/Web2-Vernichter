@@ -42,8 +42,8 @@ function validateInput(inputId, modalId, formId) {
         divElement.textContent = "Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen an"
     } else {
         // Zeige das entsprechende Modal
-        //console.log("Formular wurde abgeschickt!");
-        //document.getElementById(formId).reset();
         $(`#${modalId}`).modal("show");
+        console.log("Formular wurde abgeschickt!");
+        document.getElementById(formId).reset();
     }
 }
