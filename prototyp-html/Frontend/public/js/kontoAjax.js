@@ -81,7 +81,7 @@ $(document).ready(function() {
             loadKonten();
         }).fail(function(jqXHR) {
             console.error("Fehler beim Hinzufügen des Kontos:", jqXHR.responseText);
-            alert('Fehler beim Hinzufügen des Kontos: ' + jqXHR.responseText);
+            //alert('Fehler beim Hinzufügen des Kontos: ' + jqXHR.responseText);
         });
     });
 

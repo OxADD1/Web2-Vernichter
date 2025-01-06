@@ -175,7 +175,7 @@ class TransaktionDao {
     }
     
 
-    update(id, userId, bankkontoIdVon, bankkontoIdNach, kategorieId, wert = 0.00, datum, notiz, typ) {
+    update(id, userId, typ, wert = 0.00, notiz, datum, kategorieId) {
         
         // Prüfen, ob die Transaktion existiert
         if (!this.exists(id, userId)) {
@@ -184,15 +184,13 @@ class TransaktionDao {
         
         const sql = `
             UPDATE Transaktion 
-            SET bankkonto_id_von = ?, bankkonto_id_nach = ?, 
-                kategorie_id = ?, wert = ?, transaktions_datum = ?, 
-                notiz = ?, typ = ?
+            SET typ = ?, wert = ?, notiz=?, transaktions_datum = ?, kategorie_id =?
             WHERE id = ? AND benutzer_id = ?`;
     
         const statement = this._conn.prepare(sql);
     
         // Parameter: Werte für das Update und die Überprüfung auf id und userId
-        const params = [bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ, id, userId];
+        const params = [typ, wert, notiz, datum, kategorieId, id, userId];
     
         const result = statement.run(params);
     

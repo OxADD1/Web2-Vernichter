@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css"> <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/transaktion.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="../js/token.js"></script>
     <script src="../js/sessionHandling.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="../lib/bootstrap/bootstrap.min.js"></script> <!-- Bootstrap 4 JS -->
     <!-- JavaScript zur Validierung des Eingabefeldes -->
     <script src="../js/decimalValidation.js"></script>
@@ -191,14 +191,7 @@
             document.getElementById('transaktionForm').style.display = 'block';
         });
 
-        // Hinzufügen Button - Beispielaktion
-        /*document.getElementById('hinzufuegenBtn').addEventListener('click', function() {
-            alert('Deine Transaktion wurde soeben deiner Historie hinzugefügt. Du findest sie unter Dashboard.');
-        });
-
-        document.getElementById('umbuchungBtn').addEventListener('click', function() {
-            alert('Die Umbuchung wurde erfolgreich durchgeführt.');
-        });*/
+    
 
         $(document).ready(function() {
             $.ajax({

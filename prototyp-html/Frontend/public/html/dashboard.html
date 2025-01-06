@@ -136,12 +136,23 @@
                 </div>
                 <div class="modal-body">
                     <form id="editTransaction">
+                        <input type="hidden" id="editTransaktionId">
+                        <div class="form-group">
+                            <label for="typ">Typ</label>
+                            <select class="form-control" id="typ">
+                                <option value="ausgabe">Ausgabe</option>
+                                <option value="einnahme">Einnahme</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="wert">Wert</label>
                             <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                            <div id="error-message" class="error-message" style="display: none; color: red;">
+                                Bitte geben Sie einen gültigen Betrag ein.
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="editNotiz">Notiz</label>
+                            <label for="editNotiz">Betreff der Buchung</label>
                             <input type="text" class="form-control" id="editNotiz" placeholder="Notiz">
                         </div>
                         <div class="form-group">
@@ -162,7 +173,7 @@
                         <div id="answer"></div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" id="deleteBtn" data-dismiss="modal">Löschen</button>
-                            <button type="button" class="btn btn-primary" id="saveBtn" data-dismiss="modal" onclick="validateInput('wert','speichernModal','editTransaction')">Speichern</button>
+                            <button type="button" class="btn btn-primary" id="saveBtn" data-dismiss="modal" onclick="validateInput('wert','speichernModal')">Speichern</button>
                         </div>                        
                     </form>
                 </div>
@@ -191,6 +202,28 @@
     </div>
 
 
+    <!--Modal Transaktion loeschen-->
+    <div class="modal fade" id="geloeschtModal" tabindex="-1" role="dialog" 
+        aria-labelledby="geloeschtModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaktion löschen</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Möchten Sie diese Transaktion endgültig löschen?</p>
+                </div>
+                <div class="modal-footer">
+                    <!-- Button für die Bestätigung des Löschens -->
+                    <button type="button" id="deleteConfirmButton" class="btn btn-danger">Ja</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Nein</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 
