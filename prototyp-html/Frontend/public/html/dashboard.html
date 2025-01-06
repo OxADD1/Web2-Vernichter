@@ -24,7 +24,9 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="./dashboard.html">Logo</a>
+        <a class="navbar-brand" href="./dashboard.html">
+            <img src="../logo.png" alt="Logo" class="d-inline-block align-top" style="height: 40px;">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -208,7 +210,7 @@
                 dataType: 'json',
             }).done(function(response) {
                 console.log('Kategorie geladen in Buchungen: ', response);
-                fillButton(response, ["categoryFilter", "editKategorie"], "Kategorien", "name");
+                fillButton(response, ["categoryFilter", "editKategorie"], "wähle eine Kategorie aus", "name");
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
             });
