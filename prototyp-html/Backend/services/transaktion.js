@@ -27,10 +27,6 @@ serviceRouter.get('/transaktion/vonBenutzer', validateToken, function(request, r
 });
 
 
-
-
-
-// hole gefilterte transaktion vom benutzer
 // hole gefilterte Transaktionen vom Benutzer
 serviceRouter.post('/transaktion/filtered', validateToken, function(request, response) {
     console.log('Service Transaktion: Client requests filtered transactions for userId=' + request.userId);
