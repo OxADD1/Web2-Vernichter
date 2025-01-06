@@ -26,7 +26,9 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="./dashboard.html">Logo</a>
+        <a class="navbar-brand" href="./dashboard.html">
+            <img src="../logo.png" alt="Logo" class="d-inline-block align-top" style="height: 40px;">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -36,7 +38,7 @@
                 <li class="nav-item"><a class="nav-link" href="./transaktion.html">Neue Buchung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kontoverwaltung.html">Kontoverwaltung</a></li>
                 <li class="nav-item"><a class="nav-link" href="./kundenservice.html">Kundenservice</a></li>
-                <li class="nav-item"><a  id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
+                <li class="nav-item"><a id="logoutButton" class="nav-link" href="../index.html">Logout</a></li>
                 <li style="margin-left: auto; font-weight: bold;" class="nav-item ml-auto">
                     <span class="navbar-text" id="welcomeName"></span>
                 </li>
@@ -61,147 +63,152 @@
         </div>
 
         <!-- Formular für Transaktionsdetails -->
-    <div id="transaktionForm" class="container mt-4">
-        <h4>Buchungsdetails</h4>    
-        <form id="transaktionForm">
-            <div class="form-group">
-                <label for="konto">Konto</label>
-                <select class="form-control" id="konto">
-                    <!--<option>Bargeld</option>
+        <div id="transaktionForm" class="container mt-4">
+            <h4>Buchungsdetails</h4>
+            <form id="transaktionForm">
+                <div class="form-group">
+                    <label for="konto">Konto</label>
+                    <select class="form-control" id="konto">
+                        <!--<option>Bargeld</option>
                     <option>Girokonto</option>
                     <option>Kreditkarte</option>-->
-                </select>
-            </div>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="wert">Wert</label>
-                <input type="text" class="form-control" id="wert" placeholder="0.00 €">
-                <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen Wert mit maximal zwei Nachkommastellen ein.</span>
-            </div>
+                <div class="form-group">
+                    <label for="wert">Wert</label>
+                    <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                    <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen
+                        Wert mit maximal zwei Nachkommastellen ein.</span>
+                </div>
 
-            <div class="form-group">
-                <label for="kategorie">Kategorie</label>
-                <select class="form-control" id="kategorie">
-                    <!--<option>Lebensmittel</option>
+                <div class="form-group">
+                    <label for="kategorie">Kategorie</label>
+                    <select class="form-control" id="kategorie">
+                        <!--<option>Lebensmittel</option>
                     <option>Miete</option>
                     <option>Freizeit</option>-->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notiz">Betreff der Buchung</label>
+                    <input type="text" class="form-control" id="notiz" placeholder="z.B. Weihnachtsgeschenk für Klaus">
+                </div>
+
+                <div class="form-group">
+                    <label for="datum">Datum</label>
+                    <input type="date" class="form-control" id="datum">
+                </div>
+
+                <div id="answer" style="color:red"></div>
+
+                <button type="button" id="einAusButton" class="btn btn-primary btn-add"
+                    onclick="validateInput('wert', 'hinzufuegenModal', 'transaktionForm')">
+                    Hinzufügen
+                </button>
+            </form>
+        </div>
+
+        <!-- Modal für den Hinzufuegen-Button -->
+        <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog"
+            aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="hinzufuegenModalLabel">Die Transaktion wurde hinzugefügt!</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            onclick="location.reload();">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formular für Umbuchung anzeigen -->
+    <div id="umbuchungForm" class="container mt-4" style="display: none;">
+        <h4>Umbuchung</h4>
+        <form id="umbuchungsForm2">
+            <div class="form-group">
+                <label for="konto1">Von Konto</label>
+                <select class="form-control" id="konto1">
+                    <!--<option>Bargeld</option>
+                        <option>Girokonto</option>
+                        <option>Kreditkarte</option>-->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="konto2">Zu Konto</label>
+                <select class="form-control" id="konto2">
+                    <!--<option>Bargeld</option>
+                        <option>Girokonto</option>
+                        <option>Kreditkarte</option>-->
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="notiz">Betreff der Buchung</label>
-                <input type="text" class="form-control" id="notiz" placeholder="z.B. Weihnachtsgeschenk für Klaus">
+                <label for="wertUmbuchung">Wert</label>
+                <input type="number" class="form-control" id="wertUmbuchung" placeholder="0.00 €">
             </div>
 
             <div class="form-group">
-                <label for="datum">Datum</label>
-                <input type="date" class="form-control" id="datum">
+                <label for="notizUmbuchung">Betreff der Umbuchung</label>
+                <input type="text" class="form-control" id="notizUmbuchung" placeholder="Pflicht">
             </div>
 
-            <div id="answer" style="color:red"></div>
+            <div class="form-group">
+                <label for="datumUmbuchung">Datum</label>
+                <input type="date" class="form-control" id="datumUmbuchung">
+            </div>
 
-            <button type="button" id="einAusButton" class="btn btn-primary btn-add" onclick="validateInput('wert', 'hinzufuegenModal', 'transaktionForm')">
+            <button type="button" id="umbuchungButton" class="btn btn-primary btn-add"
+                onclick="validateInput('wertUmbuchung', 'hinzufuegenModal', 'umbuchungsForm2')">
                 Hinzufügen
             </button>
+
+
         </form>
     </div>
-
-    <!-- Modal für den Hinzufuegen-Button -->
-    <div class="modal fade" id="hinzufuegenModal" tabindex="-1" role="dialog" aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="hinzufuegenModalLabel">Die Transaktion wurde hinzugefügt!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                </div> 
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <!-- Formular für Umbuchung anzeigen -->
-        <div id="umbuchungForm" class="container mt-4" style="display: none;">
-            <h4>Umbuchung</h4>
-            <form id="umbuchungsForm2">
-                <div class="form-group">
-                    <label for="konto1">Von Konto</label>
-                    <select class="form-control" id="konto1">
-                        <!--<option>Bargeld</option>
-                        <option>Girokonto</option>
-                        <option>Kreditkarte</option>-->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="konto2">Zu Konto</label>
-                    <select class="form-control" id="konto2">
-                        <!--<option>Bargeld</option>
-                        <option>Girokonto</option>
-                        <option>Kreditkarte</option>-->
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="wertUmbuchung">Wert</label>
-                    <input type="number" class="form-control" id="wertUmbuchung" placeholder="0.00 €">
-                </div>
-
-                <div class="form-group">
-                    <label for="notizUmbuchung">Betreff der Umbuchung</label>
-                    <input type="text" class="form-control" id="notizUmbuchung" placeholder="Pflicht">
-                </div>
-
-                <div class="form-group">
-                    <label for="datumUmbuchung">Datum</label>
-                    <input type="date" class="form-control" id="datumUmbuchung">
-                </div>
-
-                <button type="button" id="umbuchungButton" class="btn btn-primary btn-add" onclick="validateInput('wertUmbuchung', 'hinzufuegenModal', 'umbuchungsForm2')">
-                    Hinzufügen
-                </button>
-
-
-            </form>
-        </div>
 
     <!-- Footer -->
     <footer class="text-center mt-5">
         <p>Firma ©2025 | <a href="./kundenservice.html">Kontakt</a> | <a href="./impressum.html">Impressum</a></p>
     </footer>
 
-    
+
     <script>
         // JavaScript zur Anzeige des entsprechenden Formulars
-        document.getElementById('umbuchung').addEventListener('click', function() {
+        document.getElementById('umbuchung').addEventListener('click', function () {
             document.getElementById('transaktionForm').style.display = 'none';
             document.getElementById('umbuchungForm').style.display = 'block';
         });
 
-        document.getElementById('ausgabe').addEventListener('click', function() {
+        document.getElementById('ausgabe').addEventListener('click', function () {
             document.getElementById('umbuchungForm').style.display = 'none';
             document.getElementById('transaktionForm').style.display = 'block';
         });
 
-        document.getElementById('einnahme').addEventListener('click', function() {
+        document.getElementById('einnahme').addEventListener('click', function () {
             document.getElementById('umbuchungForm').style.display = 'none';
             document.getElementById('transaktionForm').style.display = 'block';
         });
 
     
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajax({
-               url: 'http://localhost:8000/api/bankkonto/alle',
-               method: 'GET',
-               contentType: 'application/json; charset=utf-8',
+                url: 'http://localhost:8000/api/bankkonto/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
                 cache: false,
                 dataType: 'json',
-                headers: getAuthorizationObject() 
-            }).done(function(response) {
+                headers: getAuthorizationObject()
+            }).done(function (response) {
                 console.log('Konten geladen in Buchungen: ', response);
                 fillButton(response, ["konto", "konto1", "konto2"], "Bitte wählen Sie ein Konto", "kontoname");
             }).fail(function (jqXHR) {
@@ -215,19 +222,19 @@
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
                 dataType: 'json',
-            }).done(function(response) {
+            }).done(function (response) {
                 console.log('Kategorie geladen in Buchungen: ', response);
                 fillButton(response, ["kategorie"], "Bitte wählen Sie eine Kategorie", "name");
-            }).fail(function(jqXHR) {
+            }).fail(function (jqXHR) {
                 console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
             });
         });
 
 
-    </script> 
+    </script>
 
 
-    
+
 </body>
 
 </html>

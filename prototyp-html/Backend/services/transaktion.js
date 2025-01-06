@@ -27,25 +27,38 @@ serviceRouter.get('/transaktion/vonBenutzer', validateToken, function(request, r
 });
 
 
-
-
-
-// hole gefilterte transaktion vom benutzer
+// hole gefilterte Transaktionen vom Benutzer
 serviceRouter.post('/transaktion/filtered', validateToken, function(request, response) {
     console.log('Service Transaktion: Client requests filtered transactions for userId=' + request.userId);
+
     const transaktionDao = new TransaktionDao(request.app.locals.dbConnection);
 
-    const { startDatum, endDatum, kategorieId } = request.body;
+    let { startDatum, endDatum, kategorieId } = request.body;
+
+    // Falls kein Datum ausgewählt wurde, nutze null
+    if (!startDatum) startDatum = null;
+    if (!endDatum)   endDatum   = null;
+    // Wenn kein kategorieId => "Alle"
+    if (!kategorieId) kategorieId = 'Alle';
 
     try {
-        var result = transaktionDao.loadFiltered(request.userId, { startDatum, endDatum, kategorieId });
+        // Hier KORREKT aufsplitten statt ein Objekt zu übergeben:
+        var result = transaktionDao.loadFiltered(
+            request.userId,
+            startDatum,
+            endDatum,
+            kategorieId
+        );
         console.log('Service Transaktion: Filtered transactions loaded.');
         response.status(200).json(result);
+
     } catch (ex) {
         console.error('Service Transaktion: Error loading filtered transactions. Exception occurred: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });
+
+
 
 
 

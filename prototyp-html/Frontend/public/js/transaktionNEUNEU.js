@@ -365,13 +365,49 @@ $(document).ready(function () {
   // ----------------------------------------------------------
   // 10) Filtern-Button
   // ----------------------------------------------------------
-  $("#filterBtn").on("click", function () {
-    const startDate = $("#startDate").val();
-    const endDate = $("#endDate").val();
-    const category = $("#categoryFilter").val();
-    // Hier ggf. Filter-Logik
-    loadTransactions();
-  });
+   // Wenn der Nutzer auf 'Filtern' klickt
+// 10) Filtern-Button
+$('#filterBtn').click(function() {
+  // 1) Werte aus den Input-Feldern holen
+  let startDatum   = $('#startDate').val();
+  let endDatum     = $('#endDate').val();
+  let kategorieId  = $('#categoryFilter').val();
+  
+  // Falls leer, per default auf null setzen (damit dein DAO "keine Filterung" macht)
+  if (!startDatum)   startDatum   = null;
+  if (!endDatum)     endDatum     = null;
+  // Falls keine Kategorie gewählt, "Alle" für dein DAO
+  if (!kategorieId)  kategorieId  = 'Alle';
+
+  // 2) Das Objekt vorbereiten, das wir zum Backend schicken:
+  const payload = {
+    startDatum:   startDatum,
+    endDatum:     endDatum,
+    kategorieId:  kategorieId
+  };
+
+  // 3) AJAX-Request an deinen Filter-Endpoint
+  $.ajax({
+    url: 'http://localhost:8000/api/transaktion/filtered',
+    method: 'POST',
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+    headers: getAuthorizationObject(),  // Falls Token-Auth benötigt
+    data: JSON.stringify(payload)
+  })
+  .done(function(response) {
+    console.log('Gefilterte Transaktionen:', response);
+
+    // 4) Jetzt NICHT manuell Buttons erzeugen, sondern
+    //    die fertige Funktion nutzen:
+    displayTransactions(response);
+
+    // => Dadurch wird das Ergebnis wie bei loadTransactions() (alle Transaktionen)
+    //    in #recentTransactions und #allTransactionList eingehängt,
+    //    und auch die Diagramme aktualisiert.
+  })
+  .fail(handleAjaxError);
+});
 
   // ----------------------------------------------------------
   // 11) Beim Laden der Seite:
