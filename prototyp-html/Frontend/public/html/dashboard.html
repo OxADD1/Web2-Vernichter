@@ -210,7 +210,7 @@
                 dataType: 'json',
             }).done(function(response) {
                 console.log('Kategorie geladen in Buchungen: ', response);
-                fillButton(response, ["categoryFilter", "editKategorie"], "Kategorien", "name");
+                fillButton(response, ["categoryFilter", "editKategorie"], "wähle eine Kategorie aus", "name");
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
             });
