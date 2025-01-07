@@ -222,23 +222,22 @@ serviceRouter.post('/transaktion', validateToken, (req, res) => {
 
 
 // ändere eine transaktion vom benutzer
-serviceRouter.put('/transaktion/:id', validateToken, function(request, response) {
-    console.log('Service Transaktion: Client requests update of transaction with id=' + request.params.id);
+serviceRouter.patch('/transaktion/:id', validateToken, function(request, response) {
+    console.log('Request-Body:', request.body); // Debugging
     const transaktionDao = new TransaktionDao(request.app.locals.dbConnection);
 
-    const { bankkontoIdVon, bankkontoIdNach, kategorieId, wert, datum, notiz, typ } = request.body;
+    const { id, typ, wert, notiz, datum, kategorieId } = request.body;
+    console.log('Kategorie-ID:', kategorieId); // Weitere Prüfung
 
     try {
         var result = transaktionDao.update(
             request.params.id,
             request.userId,
-            bankkontoIdVon,
-            bankkontoIdNach,
-            kategorieId,
-            wert,
-            datum,
-            notiz,
-            typ
+            typ, 
+            wert, 
+            notiz, 
+            datum, 
+            kategorieId
         );
         console.log('Service Transaktion: Transaction updated with id=' + result.id);
         response.status(200).json(result);

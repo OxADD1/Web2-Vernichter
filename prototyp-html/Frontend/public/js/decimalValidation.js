@@ -8,15 +8,25 @@ function setupValidation(inputId, errorId) {
     const inputField = document.getElementById(inputId);
     const errorMessage = document.getElementById(errorId);
 
-    if (!inputField) return;
+    if (!inputField) {
+        console.warn(`Eingabefeld mit der ID "${inputId}" existiert nicht.`);
+        return;
+    }
+
+    if (!errorMessage) {
+        console.warn(`Fehlerausgabe-Element mit der ID "${errorId}" existiert nicht.`);
+        return;
+    }
 
     inputField.addEventListener("input", function (e) {
         let value = e.target.value;
 
+        // Eingabe korrigieren
         if (!/^\d*\.?\d{0,2}$/.test(value)) {
-            e.target.value = value.slice(0, -1);
+            e.target.value = value.slice(0, -1); // Letztes Zeichen entfernen
         }
 
+        // Fehlerstatus setzen
         if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
             inputField.classList.remove("invalid-input");
             errorMessage.style.display = "none";
@@ -26,6 +36,7 @@ function setupValidation(inputId, errorId) {
         }
     });
 
+    // Verhindern, dass mehrere Punkte eingegeben werden
     inputField.addEventListener("keydown", function (e) {
         if (e.key === "." && inputField.value.includes(".")) {
             e.preventDefault();
@@ -33,7 +44,8 @@ function setupValidation(inputId, errorId) {
     });
 }
 
-function validateInput(inputId, modalId, formId) {
+
+function validateInput(inputId, modalId) {
     const input = document.getElementById(inputId).value;
     const regex = /^\d+(\.\d{1,2})?$/;
 
@@ -44,6 +56,6 @@ function validateInput(inputId, modalId, formId) {
         // Zeige das entsprechende Modal
         $(`#${modalId}`).modal("show");
         console.log("Formular wurde abgeschickt!");
-        document.getElementById(formId).reset();
+        //document.getElementById(formId).reset();
     }
 }

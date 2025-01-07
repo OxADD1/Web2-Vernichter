@@ -251,35 +251,57 @@ $(document).ready(function () {
   // 6) Modal öffnen (Bearbeiten / Löschen)
   // ----------------------------------------------------------
   function openEditModal(transaction) {
-    document.getElementById("wert").value = transaction.wert || 0;
-    document.getElementById("editNotiz").value = transaction.notiz || "";
-    document.getElementById("editDatum").value =
-      transaction.transaktions_datum || "";
-    document.getElementById("editKategorie").value =
-      transaction.kategorie?.name || "Sonstiges";
+    // Entferne das Feld Typ, wenn es sich um eine Umbuchung handelt
+    if (transaction.typ === "umbuchung") {
+      $("#typ").closest(".form-group").hide(); // Versteckt das gesamte Feld
+  } else {
+      $("#typ").closest(".form-group").show(); // Zeigt das Feld, falls der Typ nicht "Umbuchung" ist
+  }
 
+    // Transaktionsdaten in die Modal-Felder schreiben
+    console.log("transaktionsID: ", transaction.id);
+
+    $("#editTransaktionId").val(transaction.id);
+    $("#typ").val(transaction.typ);
+    $("#wert").val(transaction.wert);
+    $("#editNotiz").val(transaction.notiz);
+    $("#editDatum").val(transaction.transaktions_datum);
+
+    console.log("Kategorie:",  transaction.kategorie);
+
+    // Kategorie setzen
+    if ($("#editKategorie option[value='" + transaction.kategorie.id + "']").length > 0) {
+        $("#editKategorie").val(transaction.kategorie.id);
+    } else {
+        console.warn("Kategorie nicht gefunden:", transaction.kategorie.name);
+        $("#editKategorie").val(0); // Setze Standardwert
+    }
+
+    console.log("Ausgewählte Kategorie-ID:", $("#editKategorie").val());
+
+    // Event-Handler für Speichern-Button
     $("#saveBtn")
-      .off("click")
-      .on("click", function () {
-        if (validateForm()) {
+        .off("click")
+        .on("click", function () {
           const updatedTransaction = {
-            id: transaction.id,
-            wert: parseFloat($("#wert").val()),
-            notiz: $("#editNotiz").val(),
-            datum: $("#editDatum").val(),
-            kategorie: $("#editKategorie").val(),
-          };
+              id: transaction.id, // transaktionID
+              typ: $("#typ").val(),
+              wert: parseFloat($("#wert").val()),
+              notiz: $("#editNotiz").val(),
+              datum: $("#editDatum").val(),
+              kategorieId: parseInt($("#editKategorie").val()),
+          }
           $("#editTransactionModal").modal("hide");
+          console.log("Daten, die an saveTransaction übergeben werden:", updatedTransaction);
           saveTransaction(updatedTransaction);
-        }
       });
 
     $("#deleteBtn")
       .off("click")
       .on("click", function () {
         $("#editTransactionModal").modal("hide");
-        $("#deleteTransactionModal").modal("show");
-        $("#confirmDeleteBtn")
+        $("#geloeschtModal").modal("show");
+        $("#deleteConfirmButton")
           .off("click")
           .on("click", function () {
             deleteTransaction(transaction.id);
@@ -287,19 +309,25 @@ $(document).ready(function () {
       });
   }
 
+
+
+
+
+
   // ----------------------------------------------------------
   // 7) Speichern (PUT)
   // ----------------------------------------------------------
   function saveTransaction(transaction) {
+    console.log("An Backend gesendete Daten:", transaction); // Debugging
     $.ajax({
-      url: "http://localhost:8000/api/transaktion/update",
-      method: "PUT",
+      url:  `http://localhost:8000/api/transaktion/${transaction.id}`,
+      method: "PATCH",
       contentType: "application/json",
       data: JSON.stringify(transaction),
       headers: getAuthorizationObject(),
     })
       .done(() => {
-        alert("Transaktion erfolgreich aktualisiert!");
+        $("#speichernModal").modal("show");
         loadTransactions();
       })
       .fail(handleAjaxError);
@@ -310,13 +338,12 @@ $(document).ready(function () {
   // ----------------------------------------------------------
   function deleteTransaction(id) {
     $.ajax({
-      url: `http://localhost:8000/api/transaktion/delete/${id}`,
+      url: `http://localhost:8000/api/transaktion/${id}`,
       method: "DELETE",
       headers: getAuthorizationObject(),
     })
       .done(() => {
-        alert("Transaktion gelöscht!");
-        $("#deleteTransactionModal").modal("hide");
+        $("#geloeschtModal").modal("hide");
         loadTransactions();
       })
       .fail(handleAjaxError);

@@ -59,7 +59,7 @@ $(document).ready(function() {
         console.log("Konto hinzufügen:", {kontoname, kontostand, iban});
 
         // Validierung, ob alle Felder ausgefüllt sind
-        if(!kontoname || !kontostand || !iban) {
+        if(!kontoname || !kontostand) {
             alert('Bitte alle Felder ausfüllen');
             return;
         }
@@ -81,7 +81,7 @@ $(document).ready(function() {
             loadKonten();
         }).fail(function(jqXHR) {
             console.error("Fehler beim Hinzufügen des Kontos:", jqXHR.responseText);
-            alert('Fehler beim Hinzufügen des Kontos: ' + jqXHR.responseText);
+            //alert('Fehler beim Hinzufügen des Kontos: ' + jqXHR.responseText);
         });
     });
 
@@ -134,7 +134,7 @@ $(document).ready(function() {
         console.log("Bearbeitete Daten:", {id, kontoname, kontostand, iban});
 
         // Eingabeprüfung
-        if(!id || !kontoname || !kontostand || !iban) {
+        if(!id || !kontoname || !kontostand) {
             alert('Bitte alle Felder ausfüllen');
             return;
         }
