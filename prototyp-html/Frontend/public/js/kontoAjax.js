@@ -75,12 +75,13 @@ $(document).ready(function() {
             data: JSON.stringify({ kontoname: kontoname, kontostand: kontostand, iban: iban })
         }).done(function(response) {
             console.log("Konto erstellt:", response);
+            $('#hinzufuegenModal').modal("show");
             document.getElementById('addAccountForm2').reset();
-            //alert('Konto erfolgreich hinzugefügt.');
             // Liste neu laden, um das neue Konto anzuzeigen
             loadKonten();
         }).fail(function(jqXHR) {
             console.error("Fehler beim Hinzufügen des Kontos:", jqXHR.responseText);
+            $('#nameExistsModal').modal("show");
             //alert('Fehler beim Hinzufügen des Kontos: ' + jqXHR.responseText);
         });
     });
@@ -153,10 +154,13 @@ $(document).ready(function() {
             //alert('Konto erfolgreich bearbeitet.');
             // Nach dem Bearbeiten die Liste aktualisieren
             document.getElementById('editKontoForm').reset();
+            $('#editSuccessModal').modal("show");
             loadKonten();
         }).fail(function(jqXHR) {
             console.error("Fehler beim Bearbeiten des Kontos:", jqXHR.responseText);
-            alert('Fehler beim Bearbeiten des Kontos: ' + jqXHR.responseText);
+            $('#nameExistsModal').modal("show");
+            //alert('Fehler beim Bearbeiten des Kontos: ' + jqXHR.responseText);
+
         });
     });
 
@@ -190,9 +194,10 @@ $(document).ready(function() {
                 loadKonten();
                 // Modal schließen
                 $('#deleteKontoModal').modal('hide');
+                $('#succesDeletenModal').modal('show');
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Löschen des Kontos:", jqXHR.responseText);
-                alert('Fehler beim Löschen des Kontos: ' + jqXHR.responseText);
+                $('#nameExistsModal').modal('show');
             });
         });
     });

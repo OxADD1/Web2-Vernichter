@@ -69,14 +69,10 @@ class BankkontoDao {
         return result.cnt > 0;
     }
 
-    create(userId, kontoname = '', kontostand = 0.0, iban = '') {
-        // Prüfen, ob der Kontoname für diesen Benutzer bereits existiert
-        const sqlCheck = 'SELECT COUNT(id) AS cnt FROM Bankkonto WHERE kontoname = ? AND benutzer_id = ?';
-        const checkStatement = this._conn.prepare(sqlCheck);
-        const checkResult = checkStatement.get(kontoname, userId);
     
-        console.log('nach prüfung, vor create');
-        if (checkResult.cnt > 0) {
+    create(userId, kontoname = '', kontostand = 0.0, iban = '') {
+        // Überprüfen, ob der Kontoname eindeutig ist, durch Aufruf von isunique
+        if (!this.isunique(kontoname, userId)) {
             throw new Error(`Kontoname '${kontoname}' existiert bereits für diesen Benutzer.`);
         }
     
@@ -92,8 +88,8 @@ class BankkontoDao {
             throw new Error('Could not insert new bank account. Data: ' + params);
         }
     
-        // Hier den userId mit übergeben
-        return this.loadById(result.lastInsertRowid, userId);  // <-- userId hinzugefügt
+        // Rückgabe des erstellten Kontos
+        return this.loadById(result.lastInsertRowid, userId);
     }
     
 
@@ -113,6 +109,10 @@ class BankkontoDao {
             throw new Error(`Bank account with id=${id} does not exist for userId=${userId}`);
         }
 
+        if (!this.isunique(kontoname, userId)) {
+            throw new Error(`Kontoname '${kontoname}' existiert bereits für diesen Benutzer.`);
+        }
+        
         var sql = `
             UPDATE Bankkonto 
             SET kontoname=?, kontostand=?, iban=? 

@@ -87,7 +87,7 @@
                     </div>
                     <!-- ID für den Button hinzufügen -->
                     <button type="button" id="hinzufuegenButton" class="btn btn-success btn-block" 
-                        onclick="validateInput('wert', 'hinzufuegenModal', 'addAccountForm2')">
+                        onclick="validateInput('wert')">
                         Konto hinzufügen
                     </button>
                 </form>
@@ -135,7 +135,7 @@
                 <div class="modal-footer">
                     <!-- Button mit ID für Speichern -->
                     <button type="button" id="editSaveButton" class="btn btn-primary" data-dismiss="modal"
-                        onclick="validateInput('editWert', 'editSuccessModal', 'editKontoForm')">
+                        onclick="validateInput('editWert')">
                         Speichern
                     </button>
                 </div>
@@ -184,6 +184,27 @@
         </div>
     </div>
 
+
+    <!-- Modal fuer erfolgreich gelöscht -->
+    <div class="modal fade" id="succesDeletenModal" tabindex="-1" role="dialog" 
+        aria-labelledby="hinzufuegenModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konto wurde erfolgreich gelöscht</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Dein Konto wurde gelöscht.
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- Modal fuer bearbeiten erfolgreich -->
     <div class="modal fade" id="editSuccessModal" tabindex="-1" role="dialog" 
         aria-labelledby="editSuccessLabel" aria-hidden="true">
@@ -201,5 +222,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal fuer Konto gibt es bereits -->
+    <div class="modal fade" id="nameExistsModal" tabindex="-1" role="dialog" 
+        aria-labelledby="editSuccessLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konto konnte nicht hinzugefügt werden</h5>
+                    <button type="button" class="close" data-dismiss="modal" 
+                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Dein Konto gibt es bereits mit dem Namen oder es liegt ein anderer Fehler vor.
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 </html>
