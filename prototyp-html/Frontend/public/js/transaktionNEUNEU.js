@@ -251,23 +251,41 @@ $(document).ready(function () {
   // 6) Modal öffnen (Bearbeiten / Löschen)
   // ----------------------------------------------------------
   function openEditModal(transaction) {
-    // Entferne das Feld Typ, wenn es sich um eine Umbuchung handelt
+     // 1) Typ-Logik: Umbuchung vs. andere Typen
     if (transaction.typ === "umbuchung") {
-      $("#typ").closest(".form-group").hide(); // Versteckt das gesamte Feld
-  } else {
-      $("#typ").closest(".form-group").show(); // Zeigt das Feld, falls der Typ nicht "Umbuchung" ist
-  }
+      // Umbuchung: Dropdown ausblenden
+        $("#typ").closest(".form-group").hide();
+      
+      // In das versteckte Feld "umbuchung" reinschreiben
+        $("#typUmbuchung").val("umbuchung");
+      
+      // Das Select-Feld am besten „leer“ setzen, damit nichts Falsches drinsteht
+        //$("#typ").val("");
+      
+      console.log("Umbuchung erkannt, Feld ausgeblendet.");
+    } else {
+      // Kein Umbuchungstyp: Dropdown anzeigen
+          $("#typ").closest(".form-group").show();
+      
+      // Transaktionstyp in das Select schreiben
+         $("#typ").val(transaction.typ);
+      
+      // Zur Sicherheit das versteckte Feld leeren
+          //$("#typUmbuchung").val("");
+      
+          console.log("Kein Umbuchungstyp, Dropdown eingeblendet.");
+    }
 
     // Transaktionsdaten in die Modal-Felder schreiben
-    console.log("transaktionsID: ", transaction.id);
+    console.log("transaktionstyp nach: ", transaction.typ);
 
+    // 2) Andere Felder wie gewohnt befüllen
     $("#editTransaktionId").val(transaction.id);
-    $("#typ").val(transaction.typ);
     $("#wert").val(transaction.wert);
     $("#editNotiz").val(transaction.notiz);
     $("#editDatum").val(transaction.transaktions_datum);
 
-    console.log("Kategorie:",  transaction.kategorie);
+    console.log("Kategorie:",  transaction.typ);
 
     // Kategorie setzen
     if ($("#editKategorie option[value='" + transaction.kategorie.id + "']").length > 0) {
@@ -283,14 +301,26 @@ $(document).ready(function () {
     $("#saveBtn")
         .off("click")
         .on("click", function () {
+          // Wir entscheiden dynamisch, welchen Typ wir nehmen
+          let finalTyp;
+          
+          if ($("#typUmbuchung").val() === "umbuchung") {
+              // Falls #typUmbuchung gefüllt ist, handelt es sich um eine Umbuchung
+              finalTyp = "umbuchung";
+          } else {
+              // Andernfalls lesen wir aus dem Dropdown
+              finalTyp = $("#typ").val();
+          }
+
+          // 5) Das zu speichernde Objekt aufbauen
           const updatedTransaction = {
-              id: transaction.id, // transaktionID
-              typ: $("#typ").val(),
+              id: parseInt($("#editTransaktionId").val()),
+              typ: finalTyp, 
               wert: parseFloat($("#wert").val()),
               notiz: $("#editNotiz").val(),
               datum: $("#editDatum").val(),
               kategorieId: parseInt($("#editKategorie").val()),
-          }
+          };
           $("#editTransactionModal").modal("hide");
           console.log("Daten, die an saveTransaction übergeben werden:", updatedTransaction);
           saveTransaction(updatedTransaction);
