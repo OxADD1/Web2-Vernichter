@@ -134,7 +134,7 @@ $(document).ready(function() {
         console.log("Bearbeitete Daten:", {id, kontoname, kontostand, iban});
 
         // Eingabeprüfung
-        if(!id || !kontoname || !kontostand || !iban) {
+        if(!id || !kontoname || !kontostand) {
             alert('Bitte alle Felder ausfüllen');
             return;
         }
