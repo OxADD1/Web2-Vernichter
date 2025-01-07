@@ -3,25 +3,25 @@ $(document).ready(function() {
 
     /**
      * Lädt alle Konten des angemeldeten Benutzers vom Server.
-     * Erwartet ein JSON-Array von Konto-Objekten.
+     * Erwartet vom Server ein JSON-Array von Konto-Objekten.
      * Bei Erfolg werden die Konten in #accounts-container angezeigt.
      */
     function loadKonten() {
         console.log("Rufe /api/bankkonto/alle auf...");
         $.ajax({
-            url: 'http://localhost:8000/api/bankkonto/alle', // Endpunkt für alle Konten
-            method: 'GET', // HTTP-Methode GET
-            contentType: 'application/json; charset=utf-8', // Antwortformat
-            cache: false, // Deaktiviert Caching
-            dataType: 'json', // Antworttyp JSON
-            headers: getAuthorizationObject() // Authentifizierung über Token
+            url: 'http://localhost:8000/api/bankkonto/alle',
+            method: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            dataType: 'json',
+            headers: getAuthorizationObject() // Hier wird der Token für Auth mitgeschickt
         }).done(function(response) {
             console.log('Konten geladen:', response);
 
-            // Löscht vorherigen Inhalt, bevor neue Konten hinzugefügt werden
+            // Inhalt leeren, bevor neu hinzugefügt wird
             $('#accounts-container').empty();
 
-            // Iteriert durch das Konto-Array und zeigt jedes Konto an
+            // Über das Array iterieren und jedes Konto anzeigen
             response.forEach(function(konto) {
                 $('#accounts-container').append(`
                     <div class="account-entry">
@@ -44,27 +44,27 @@ $(document).ready(function() {
         });
     }
 
-    // Ruft direkt beim Laden der Seite die Konten ab
+    // Beim Laden der Seite sofort die Konten holen
     loadKonten();
 
     /**
      * Klick-Handler für den "Konto hinzufügen"-Button.
-     * Schickt die Formulardaten per POST an den Server.
+     * Liest die Daten aus den entsprechenden Input-Feldern aus und schickt sie per POST an den Server.
      */
     $('#hinzufuegenButton').on('click', function() {
         const kontoname = $('#accountName').val().trim();
         const kontostand = $('#wert').val().trim();
         const iban = $('#accountIBANadd').val().trim();
 
-        console.log("Konto hinzufügen:", { kontoname, kontostand, iban });
+        console.log("Konto hinzufügen:", {kontoname, kontostand, iban});
 
         // Validierung, ob alle Felder ausgefüllt sind
-        if (!kontoname || !kontostand) {
+        if(!kontoname || !kontostand) {
             alert('Bitte alle Felder ausfüllen');
             return;
         }
 
-        // POST-Request an den Server zum Hinzufügen eines neuen Kontos
+        // POST-Request an den Server, um ein neues Konto anzulegen
         $.ajax({
             url: 'http://localhost:8000/api/bankkonto',
             method: 'POST',
@@ -75,19 +75,24 @@ $(document).ready(function() {
             data: JSON.stringify({ kontoname: kontoname, kontostand: kontostand, iban: iban })
         }).done(function(response) {
             console.log("Konto erstellt:", response);
-            document.getElementById('addAccountForm2').reset(); // Formular zurücksetzen
-            loadKonten(); // Liste neu laden
+            document.getElementById('addAccountForm2').reset();
+            //alert('Konto erfolgreich hinzugefügt.');
+            // Liste neu laden, um das neue Konto anzuzeigen
+            loadKonten();
         }).fail(function(jqXHR) {
             console.error("Fehler beim Hinzufügen des Kontos:", jqXHR.responseText);
+            //alert('Fehler beim Hinzufügen des Kontos: ' + jqXHR.responseText);
         });
     });
 
+
     /**
-     * Klick-Handler für den "Bearbeiten"-Button.
-     * Lädt Kontodaten vom Server und befüllt das Bearbeitungs-Modal.
+     * Event-Delegation für den "Bearbeiten"-Button.
+     * Wird geklickt, wenn ein Konto bearbeitet werden soll.
+     * Lädt die spezifischen Kontodaten vom Server und füllt das Bearbeitungs-Modal damit.
      */
     $(document).on('click', '.editKontoButton', function() {
-        const id = $(this).data('konto-id'); // Konto-ID aus data-Attribut
+        const id = $(this).data('konto-id'); // Liest die Konto-ID aus data-Attribut
         if (!id) {
             alert('Fehler: Konto-ID fehlt.');
             return;
@@ -100,11 +105,11 @@ $(document).ready(function() {
             url: `http://localhost:8000/api/bankkonto/gib/${id}`,
             method: 'GET',
             dataType: 'json',
-            headers: getAuthorizationObject()
+            headers: getAuthorizationObject(),
         }).done(function(konto) {
             console.log("Kontodaten für Bearbeitung geladen:", konto);
 
-            // Befüllt die Felder im Bearbeitungs-Modal
+            // Felder im Modal mit den geladenen Daten befüllen
             $('#editKontoId').val(konto.id);
             $('#editKontoLabel').val(konto.kontoname);
             $('#editWert').val(konto.kontostand);
@@ -117,17 +122,19 @@ $(document).ready(function() {
 
     /**
      * Klick-Handler für den "Speichern"-Button im Bearbeitungs-Modal.
-     * Schickt die geänderten Werte per PUT an den Server.
+     * Liest die geänderten Werte aus und schickt sie per PUT-Request an den Server.
      */
     $('#editSaveButton').on('click', function() {
+        // Auslesen der aktuellen Werte aus dem Modal
         const id = $('#editKontoId').val().trim();
         const kontoname = $('#editKontoLabel').val().trim();
         const kontostand = $('#editWert').val().trim();
         const iban = $('#accountIBANedit').val().trim();
 
-        console.log("Bearbeitete Daten:", { id, kontoname, kontostand, iban });
+        console.log("Bearbeitete Daten:", {id, kontoname, kontostand, iban});
 
-        if (!id || !kontoname || !kontostand) {
+        // Eingabeprüfung
+        if(!id || !kontoname || !kontostand) {
             alert('Bitte alle Felder ausfüllen');
             return;
         }
@@ -142,28 +149,33 @@ $(document).ready(function() {
             headers: getAuthorizationObject(),
             data: JSON.stringify({ id: id, kontoname: kontoname, kontostand: kontostand, iban: iban })
         }).done(function(response) {
-            document.getElementById('editKontoForm').reset(); // Formular zurücksetzen
-            loadKonten(); // Liste neu laden
+            //console.log("Konto erfolgreich aktualisiert:", response);
+            //alert('Konto erfolgreich bearbeitet.');
+            // Nach dem Bearbeiten die Liste aktualisieren
+            document.getElementById('editKontoForm').reset();
+            loadKonten();
         }).fail(function(jqXHR) {
             console.error("Fehler beim Bearbeiten des Kontos:", jqXHR.responseText);
             alert('Fehler beim Bearbeiten des Kontos: ' + jqXHR.responseText);
         });
     });
 
+
     /**
-     * Klick-Handler für den "Löschen"-Button.
-     * Zeigt das Lösch-Modal an und führt bei Bestätigung den DELETE-Request aus.
+     * Event-Delegation für den "Löschen"-Button.
+     * Wird geklickt, wenn ein Konto gelöscht werden soll.
+     * Zeigt das Lösch-Modal an, und bei "Ja" wird der DELETE-Request ausgeführt.
      */
     $(document).on('click', '.deleteKontoButton', function() {
         const id = $(this).data('konto-id');
-        if (!id) {
+        if(!id) {
             alert('Konten-ID nicht gefunden.');
             return;
         }
 
         console.log("Löschen geklickt für Konto mit ID:", id);
 
-        // DELETE-Request bei Bestätigung
+        // Bei Klick auf "Ja" im Lösch-Modal den DELETE-Request senden
         $('#deleteConfirmButton').off('click').on('click', function() {
             $.ajax({
                 url: 'http://localhost:8000/api/bankkonto/' + id,
@@ -172,8 +184,12 @@ $(document).ready(function() {
                 dataType: 'json',
                 headers: getAuthorizationObject()
             }).done(function(response) {
-                loadKonten(); // Liste neu laden
-                $('#deleteKontoModal').modal('hide'); // Modal schließen
+                console.log("Konto gelöscht:", response);
+                //alert('Konto erfolgreich gelöscht.');
+                // Nach dem Löschen erneut Konten laden
+                loadKonten();
+                // Modal schließen
+                $('#deleteKontoModal').modal('hide');
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Löschen des Kontos:", jqXHR.responseText);
                 alert('Fehler beim Löschen des Kontos: ' + jqXHR.responseText);

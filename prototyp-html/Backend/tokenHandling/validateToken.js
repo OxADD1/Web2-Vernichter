@@ -1,49 +1,45 @@
-// Importiert die jsonwebtoken-Bibliothek
+// include jwt library
 const jwt = require('jsonwebtoken');
 
-// Importiert Token-Einstellungen (Algorithmus, Geheimnis, maximale Gültigkeitsdauer)
+// get settings from file
 const { TOKEN_ALGORITHM, TOKEN_SECRET, TOKEN_MAX_AGE } = require('./tokenSettings.js');
 
-// Middleware-Funktion zur Validierung von Tokens
-// Das Token muss im Header der HTTP-Anfrage unter "Authorization" stehen, mit dem Präfix "Bearer"
-// Die Funktion wird als Export bereitgestellt
+// function validates token and return the userId which is the payload of the token
+// token has to be in the header of the http request under label authorization and has to be have a prefix, Bearer
+// is available as export function
 module.exports = function (request, response, next) {
-    console.log('Middleware for validating token was called'); // Debugging-Ausgabe
+    console.log('Middleware for validating token was called');
 
-    // Überprüft, ob das Authorization-Attribut im Header vorhanden ist
+    // first check if correct header attribute is set
     if (request.headers['authorization'] === undefined) {
-        console.log('Authorization attribute not found in header'); // Debugging-Ausgabe
-        response.status(401).json({ 'fehler': true, 'nachricht': 'Token was not provided' }); // Fehlerantwort
+        console.log('Authorization attribute not found in header');
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Token was not provided' });
         return;
     }
 
-    // Extrahiert den Inhalt des Authorization-Headers und überprüft das Format
+    // now get content of attribute and check if prefix is present
+    // and length is at least 50 chars
     var tmp = request.headers['authorization'];
     if (!tmp.startsWith('Bearer') || tmp.length < 50) {
-        console.log('Authorization attribute has invalid format'); // Debugging-Ausgabe
-        response.status(401).json({ 'fehler': true, 'nachricht': 'Token format mismatch' }); // Fehlerantwort
+        console.log('Authorization attribute has invalid format');
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Token format mismatch' });
         return;
     }
 
-    // Entfernt das "Bearer"-Präfix und validiert das Token
-    tmp = tmp.slice(7); // Entfernt die ersten 7 Zeichen ("Bearer ")
+    // now remove the prefix and validate if token is valid
+    tmp = tmp.slice(7);
     try {
-        console.log('Verifying found Token'); // Debugging-Ausgabe
-        var decrypted = jwt.verify(tmp, TOKEN_SECRET, { 
-            algorithm: TOKEN_ALGORITHM, 
-            expiresIn: TOKEN_MAX_AGE 
-        }); // Validiert das Token mit den Einstellungen
-
-        console.log('Token successfully decrypted and is valid, created, validTill', decrypted.iat, decrypted.exp); // Debugging-Ausgabe
+        console.log('Verifying found Token');
+        var decrypted = jwt.verify(tmp, TOKEN_SECRET, { algorithm: TOKEN_ALGORITHM, expiresIn: TOKEN_MAX_AGE });
+        console.log('Token successfully decrypted and is valid, created, validTill', decrypted.iat, decrypted.exp);
     } catch (ex) {
-        console.log('Validation failed'); // Debugging-Ausgabe
-        response.status(401).json({ 'fehler': true, 'nachricht': 'Token is not valid' }); // Fehlerantwort
+        console.log('Validation failed');
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Token is not valid' });
         return;
     }
 
-    // Token ist gültig: Benutzer-ID aus dem Token im Request-Objekt speichern
-    request.userId = decrypted.userId; // Benutzer-ID für spätere Verwendung speichern
-    console.log('Remembered userId', request.userId); // Debugging-Ausgabe
-
-    next(); // Nächste Middleware oder Route aufrufen
-};
+    // everything is ok, remember the userId from token in request object for Service Method
+    request.userId = decrypted.userId;
+    console.log('Remembered userId', request.userId);
+    next();
+}

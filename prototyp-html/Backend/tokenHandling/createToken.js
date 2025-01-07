@@ -1,20 +1,15 @@
-// Importiert die jsonwebtoken-Bibliothek für das Arbeiten mit JWTs (JSON Web Tokens)
+// include jwt library
 const jwt = require('jsonwebtoken');
 
-// Importiert Token-Einstellungen (Algorithmus, Geheimnis, maximale Gültigkeitsdauer)
+// get settings from file
 const { TOKEN_ALGORITHM, TOKEN_SECRET, TOKEN_MAX_AGE } = require('./tokenSettings.js');
 
-// Funktion, die Daten verschlüsselt und als Token zurückgibt
-// Wird als Exportfunktion bereitgestellt
+// function encrypts given data as an token and returns it
+// is available as export function
 module.exports.encrypt = function(dataToEncrypt) {
-    console.log('creating token with data', dataToEncrypt); // Debugging-Ausgabe
+    console.log('creating token with data', dataToEncrypt);
+    var encrypted = jwt.sign(dataToEncrypt, TOKEN_SECRET, { algorithm: TOKEN_ALGORITHM, expiresIn: TOKEN_MAX_AGE });
 
-    // Erstellt und signiert ein Token mit den übergebenen Daten
-    var encrypted = jwt.sign(dataToEncrypt, TOKEN_SECRET, { 
-        algorithm: TOKEN_ALGORITHM, 
-        expiresIn: TOKEN_MAX_AGE 
-    });
-
-    console.log('token created and encrypted'); // Debugging-Ausgabe
-    return encrypted; // Gibt das verschlüsselte Token zurück
+    console.log('token created and encrypted');
+    return encrypted;
 };
