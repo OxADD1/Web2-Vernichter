@@ -448,4 +448,14 @@ $('#filterBtn').click(function() {
     // Erst wenn Gesamtvermögen geladen ist, Transaktionen holen:
     loadTransactions();
   });
+
+
+  // ----------------------------------------------------------
+  // 12) Filter-Reset-Button
+  // ----------------------------------------------------------
+// 10) Filter-Reset-Button
+$('#resetfilterBtn').click(function() {
+  loadTransactions();
+});
+
 });
