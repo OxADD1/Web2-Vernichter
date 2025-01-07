@@ -59,7 +59,7 @@ $(document).ready(function() {
         console.log("Konto hinzufügen:", {kontoname, kontostand, iban});
 
         // Validierung, ob alle Felder ausgefüllt sind
-        if(!kontoname || !kontostand || !iban) {
+        if(!kontoname || !kontostand) {
             alert('Bitte alle Felder ausfüllen');
             return;
         }
