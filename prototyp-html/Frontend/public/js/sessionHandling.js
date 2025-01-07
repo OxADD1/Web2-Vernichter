@@ -1,69 +1,69 @@
-// sets or overwrites an value in local storage
+// Speichert oder überschreibt einen Wert in der SessionStorage
 function setSessionItem(label, value) {
-    sessionStorage.setItem(label, value);
+    sessionStorage.setItem(label, value); // Speichert den Wert mit dem angegebenen Schlüssel (label)
 }
 
-// retreives an value from sessionStorage by label
-// returns null if not existent
+// Ruft einen Wert aus der SessionStorage ab
+// Gibt `null` zurück, wenn der Schlüssel nicht existiert
 function getSessionItem(label) {
-    return sessionStorage.getItem(label);
+    return sessionStorage.getItem(label); // Holt den Wert für den angegebenen Schlüssel (label)
 }
 
-// checks, if an item exists in local storage
+// Prüft, ob ein Eintrag in der SessionStorage existiert
 function existsSessionItem(label) {
-    return !isNullOrUndefined(getSessionItem(label));
+    return !isNullOrUndefined(getSessionItem(label)); // Gibt `true` zurück, wenn ein Wert existiert, andernfalls `false`
 }
 
-// sets or overwrites an json object as value to local storage
+// Speichert oder überschreibt ein JSON-Objekt in der SessionStorage
 function setJSONSessionItem(label, jsonValue) {
-    setSessionItem(label, JSON.stringify(jsonValue));
+    setSessionItem(label, JSON.stringify(jsonValue)); // Wandelt das JSON-Objekt in einen String um und speichert es
 }
 
-// retreives an json object from local storage
-// if not existent returns null
-// if json string converts to json object
+// Ruft ein JSON-Objekt aus der SessionStorage ab
+// Gibt `null` zurück, wenn der Schlüssel nicht existiert
+// Wandelt den JSON-String zurück in ein JSON-Objekt, falls vorhanden
 function getJSONSessionItem(label) {
-    var val = getSessionItem(label);
+    var val = getSessionItem(label); // Holt den gespeicherten Wert
 
-    // if undefined (not existent), return undefined
+    // Wenn der Wert nicht existiert, wird `null` zurückgegeben
     if (isNullOrUndefined(val)) 
         return val;
 
-    // if json string, convert and return as json object
+    // Wenn es ein JSON-String ist, wird es in ein JSON-Objekt umgewandelt
     if (isJSONString(val)) 
         return tryParseJSONString(val);
 
-    // otherwise return as string
+    // Ansonsten wird der Wert als String zurückgegeben
     return val;
 }
 
-// removes a session item by label
+// Entfernt einen Eintrag aus der SessionStorage anhand des Schlüssels
 function removeSessionItem(label) {
-    sessionStorage.removeItem(label);
+    sessionStorage.removeItem(label); // Entfernt den Eintrag mit dem angegebenen Schlüssel
 }
 
-// clears complete session / deletes all session items
+// Löscht alle Einträge in der SessionStorage
 function clearSession() {
-    sessionStorage.clear();
+    sessionStorage.clear(); // Löscht die gesamte SessionStorage
 }
 
-// try parse JSON string
-// returns false if no json string otherwise the JSON object
+// Versucht, einen JSON-String zu parsen
+// Gibt `false` zurück, wenn der String kein gültiges JSON ist, andernfalls das geparste JSON-Objekt
 function tryParseJSONString(str) {
     try {
-        var obj = JSON.parse(str);
+        var obj = JSON.parse(str); // Versucht, den String als JSON zu parsen
         if (obj && typeof obj === "object") 
-            return obj;
-    } catch (e) { }
-    return false;
+            return obj; // Gibt das JSON-Objekt zurück, wenn es erfolgreich ist
+    } catch (e) { } // Fängt Parsing-Fehler ab
+    return false; // Gibt `false` zurück, wenn das Parsen fehlschlägt
 }
 
-// check if given string is a json string
+// Prüft, ob der gegebene String ein JSON-String ist
 function isJSONString(str) {
-    return tryParseJSONString(str) != false;
+    return tryParseJSONString(str) != false; // Gibt `true` zurück, wenn es ein JSON-String ist, andernfalls `false`
 }
 
-// function checks if given value is null or undefined
+// Prüft, ob der gegebene Wert `null` oder `undefined` ist
 function isNullOrUndefined(val) {
-    return val === null || val === undefined;
+    return val === null || val === undefined; // Gibt `true` zurück, wenn der Wert `null` oder `undefined` ist
 }
