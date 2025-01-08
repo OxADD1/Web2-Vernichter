@@ -2,8 +2,10 @@ $(document).ready(function () {
     // Token und Sessiondaten über Session-Handling abrufen
     const credentials = getJSONSessionItem('credentials'); // Nutzt deine Funktion getJSONSessionItem
     if (!credentials || !credentials.token) {
-        alert('Sie müssen eingeloggt sein, um dieses Formular zu nutzen.');
-        window.location.href = '../login.html'; // Weiterleitung zur Login-Seite
+        showPopup('error', 'Sie müssen eingeloggt sein, um dieses Formular zu nutzen.');
+        setTimeout(() => {
+            window.location.href = '../login.html'; // Weiterleitung zur Login-Seite
+        }, 3000);
         return;
     }
 
@@ -22,7 +24,7 @@ $(document).ready(function () {
 
         // Validierung der Eingaben
         if (!typ || !anrede || !name || !email || !nachricht) {
-            alert('Bitte füllen Sie alle Felder aus.');
+            showPopup('error', 'Bitte füllen Sie alle Felder aus.');
             return;
         }
 
@@ -47,13 +49,25 @@ $(document).ready(function () {
             },
             data: JSON.stringify(payload),
             success: function (response) {
-                alert('Ihre Nachricht wurde erfolgreich gesendet.');
+                showPopup('success', 'Ihre Nachricht wurde erfolgreich gesendet.');
                 $('#feedbackForm').trigger('reset'); // Formular zurücksetzen
             },
             error: function (jqXHR) {
-                alert('Fehler: ' + jqXHR.responseText || 'Ein Problem ist aufgetreten.');
+                const errorMessage = jqXHR.responseText || 'Ein Problem ist aufgetreten.';
+                showPopup('error', `Fehler: ${errorMessage}`);
                 console.error('Fehlerdetails:', jqXHR);
             }
         });
     });
+
+    // Funktion zum Anzeigen eines Popups
+    function showPopup(type, message) {
+        const popup = type === 'success' ? $('#successMessage') : $('#errorMessage');
+        popup.text(message).removeClass('hidden').addClass('show');
+
+        // Nach 3 Sekunden ausblenden
+        setTimeout(() => {
+            popup.removeClass('show').addClass('hidden');
+        }, 3000);
+    }
 });

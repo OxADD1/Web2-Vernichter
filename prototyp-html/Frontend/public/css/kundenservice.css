@@ -17,3 +17,37 @@
 .toggle-buttons label {
     margin: 0 10px;
 }
+
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #28a745; /* Standard: Grün für Erfolg */
+    color: white;
+    padding: 20px 30px; /* Mehr Platz für den Text */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Mehr Schatten für bessere Sichtbarkeit */
+    font-size: 18px; /* Größerer Text */
+    z-index: 1050; /* Höher als andere Elemente */
+    text-align: center; /* Zentrierter Text */
+    opacity: 0;
+    display: none; /* Verhindert Anzeige vor Aktivierung */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    max-width: 80%; /* Begrenzung der Breite */
+    word-wrap: break-word; /* Zeilenumbruch bei langen Texten */
+}
+
+.popup.show {
+    display: block; /* Sichtbar */
+    opacity: 1;
+}
+
+.popup.success {
+    background-color: #28a745; /* Grün für Erfolg */
+}
+
+.popup.error {
+    background-color: #dc3545; /* Rot für Fehler */
+}
