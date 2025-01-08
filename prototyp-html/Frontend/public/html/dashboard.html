@@ -238,92 +238,6 @@
 
     <!-- Diagramme -->
     <script>
-<<<<<<< HEAD
-
-   // Einnahmen und Ausgaben abrufen
-function fetchBalanceData() {
-    $.ajax({
-        url: '/transaktion/kontostand',
-        method: 'GET',
-        success: function(data) {
-            updateBalanceChart(data);
-        },
-        error: function(err) {
-            console.error('Fehler beim Abrufen der Einnahmen und Ausgaben:', err);
-        }
-    });
-}
-
-// Ausgaben nach Kategorien abrufen
-function fetchCategoryData() {
-    $.ajax({
-        url: '/transaktion/ausgabenNachKategorie',
-        method: 'GET',
-        success: function(data) {
-            updateCategoryChart(data);
-        },
-        error: function(err) {
-            console.error('Fehler beim Abrufen der Kategorien:', err);
-        }
-    });
-}
-
-// Einnahmen/Ausgaben Diagramm aktualisieren
-function updateBalanceChart(balanceData) {
-    const { einnahmen, ausgaben } = balanceData;
-    chart.data.datasets[0].data = [einnahmen, Math.abs(ausgaben)];
-    chart.update();
-}
-
-// Kategorien-Diagramm aktualisieren
-function updateCategoryChart(categoryData) {
-    const labels = categoryData.map(item => item.kategorie);
-    const values = categoryData.map(item => Math.abs(item.betrag));
-    categoryChart.data.labels = labels;
-    categoryChart.data.datasets[0].data = values;
-    categoryChart.update();
-}
-
-// Seite initialisieren
-$(document).ready(function() {
-    fetchBalanceData();
-    fetchCategoryData();
-});
-
-// Diagramme initialisieren
-const ctx = document.getElementById('chart').getContext('2d');
-const chart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Einnahmen', 'Ausgaben'],
-        datasets: [{
-            data: [0, 0], // Dynamisch aktualisiert
-            backgroundColor: ['#28a745', '#dc3545']
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true
-    }
-});
-
-const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-const categoryChart = new Chart(ctxCategory, {
-    type: 'doughnut',
-    data: {
-        labels: [], // Dynamisch aktualisiert
-        datasets: [{
-            data: [], // Dynamisch aktualisiert
-            backgroundColor: ['#007bff', '#ffc107', '#17a2b8', '#fd7e14', '#20c997', '#6f42c1']
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true
-    }
-});
-
-=======
      $(document).ready(function() {
             $.ajax({
                 url: 'http://localhost:8000/api/kategorie/alle',
@@ -365,7 +279,6 @@ const categoryChart = new Chart(ctxCategory, {
     
 
 
->>>>>>> e4fe1cda7e69f9966624c4fd384caa6cf81314e6
     </script>
 
 
