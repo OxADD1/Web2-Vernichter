@@ -82,7 +82,7 @@
 
                     }).fail(function (jqXHR, statusText, error) {
                         console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                        $('#errorArea').html('Login fehlerhaft, bitte versuchen Sie es erneut!');
+                        $('#errorArea').html('Login fehlerhaft, Username oder Passwort ist falsch!');
                     });
                 });
             });
