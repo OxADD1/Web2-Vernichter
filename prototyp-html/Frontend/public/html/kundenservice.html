@@ -70,8 +70,27 @@
             </div>
         </div>
 
-        <div id="successMessage" class="popup hidden"></div>
-<div id="errorMessage" class="popup hidden"></div>
+        <div id="successMessage" class="popup">
+            <div class="popup-header">
+                <span>Erfolg</span>
+                <button class="close" onclick="closePopup('successMessage')">×</button>
+            </div>
+            <div class="popup-body">
+                Die Transaktion wurde erfolgreich hinzugefügt!
+            </div>
+        </div>
+        
+        <div id="errorMessage" class="popup">
+            <div class="popup-header">
+                <span>Fehler</span>
+                <button class="close" onclick="closePopup('errorMessage')">×</button>
+            </div>
+            <div class="popup-body">
+                Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.
+            </div>
+        </div>
+        
+        
 
         <form id="feedbackForm">
             <div class="form-group">

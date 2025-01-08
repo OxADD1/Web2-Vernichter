@@ -42,7 +42,7 @@ $(document).ready(function () {
         // AJAX-Anfrage
         $.ajax({
             url: 'http://localhost:8000/api/kundenservice',
-            method: 'post',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` // Token im Header mitgeben
@@ -63,11 +63,21 @@ $(document).ready(function () {
     // Funktion zum Anzeigen eines Popups
     function showPopup(type, message) {
         const popup = type === 'success' ? $('#successMessage') : $('#errorMessage');
-        popup.text(message).removeClass('hidden').addClass('show');
 
-        // Nach 3 Sekunden ausblenden
+        // Nachricht im Popup setzen
+        popup.find('.popup-body').text(message);
+
+        // Popup sichtbar machen
+        popup.fadeIn();
+
+        // Nach 3 Sekunden automatisch ausblenden
         setTimeout(() => {
-            popup.removeClass('show').addClass('hidden');
+            popup.fadeOut();
         }, 3000);
     }
+
+    // Funktion zum manuellen Schließen des Popups
+    window.closePopup = function (popupId) {
+        $(`#${popupId}`).fadeOut();
+    };
 });

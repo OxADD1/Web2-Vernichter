@@ -18,36 +18,46 @@
     margin: 0 10px;
 }
 
-
 .popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #28a745; /* Standard: Grün für Erfolg */
-    color: white;
-    padding: 20px 30px; /* Mehr Platz für den Text */
+    background-color: white; /* Weißer Hintergrund */
+    color: black; /* Schwarzer Text */
+    padding: 20px 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Mehr Schatten für bessere Sichtbarkeit */
-    font-size: 18px; /* Größerer Text */
-    z-index: 1050; /* Höher als andere Elemente */
-    text-align: center; /* Zentrierter Text */
-    opacity: 0;
-    display: none; /* Verhindert Anzeige vor Aktivierung */
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    max-width: 80%; /* Begrenzung der Breite */
-    word-wrap: break-word; /* Zeilenumbruch bei langen Texten */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    z-index: 1050;
+    text-align: center;
+    display: none; /* Unsichtbar bis aktiv */
+    max-width: 400px;
+    word-wrap: break-word;
 }
 
-.popup.show {
-    display: block; /* Sichtbar */
-    opacity: 1;
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
 }
 
-.popup.success {
-    background-color: #28a745; /* Grün für Erfolg */
+.popup-header .close {
+    font-size: 18px;
+    cursor: pointer;
+    color: #aaa;
+    border: none;
+    background: none;
+    font-weight: bold;
 }
 
-.popup.error {
-    background-color: #dc3545; /* Rot für Fehler */
+.popup-header .close:hover {
+    color: #000;
+}
+
+.popup-body {
+    margin-bottom: 0; /* Kein zusätzlicher Abstand */
 }
