@@ -19,7 +19,7 @@ class BankkontoDao {
         var statement = this._conn.prepare(sql);
         var result = statement.get(id, userId);
 
-        if (helper.isUndefined(result)) 
+        if (helper.isUndefined(result))
             throw new Error('No Record found by id=' + id + ' for userId=' + userId);
 
         result.benutzer = benutzerDao.loadById(result.benutzer_id);
@@ -36,10 +36,10 @@ class BankkontoDao {
         `;
         const statement = this._conn.prepare(sql);
         const row = statement.get(userId);
-    
+
         return row.gesamt || 0; // falls NULL, auf 0 fallbacken
     }
-    
+
 
     loadAllByUserId(userId) { // alle Konten für Kontoverwaltung und UserId aus Token
         const benutzerDao = new BenutzerDao(this._conn);
@@ -49,7 +49,7 @@ class BankkontoDao {
         var result = statement.all(userId);
 
 
-        if (helper.isArrayEmpty(result)) 
+        if (helper.isArrayEmpty(result))
             return [];
 
         for (var i = 0; i < result.length; i++) {
@@ -69,29 +69,29 @@ class BankkontoDao {
         return result.cnt > 0;
     }
 
-    
+
     create(userId, kontoname = '', kontostand = 0.0, iban = '') {
         // Überprüfen, ob der Kontoname eindeutig ist, durch Aufruf von isunique
         if (!this.isunique(kontoname, userId)) {
             throw new Error(`Kontoname '${kontoname}' existiert bereits für diesen Benutzer.`);
         }
-    
+
         // Wenn der Name eindeutig ist, neues Konto erstellen
         const sqlInsert = `INSERT INTO Bankkonto (benutzer_id, kontoname, kontostand, iban) VALUES (?, ?, ?, ?)`;
         const insertStatement = this._conn.prepare(sqlInsert);
         const params = [userId, kontoname, kontostand, iban];
-    
+
         const result = insertStatement.run(params);
         console.log('result:', result);  // Für besseres Debugging
-    
+
         if (result.changes !== 1) {
             throw new Error('Could not insert new bank account. Data: ' + params);
         }
-    
+
         // Rückgabe des erstellten Kontos
         return this.loadById(result.lastInsertRowid, userId);
     }
-    
+
 
 
     // Prüfen, ob der Kontoname einzigartig ist für die userId
@@ -105,14 +105,22 @@ class BankkontoDao {
 
     // Ein Bankkonto aktualisieren
     update(id, userId, kontoname = '', kontostand = 0.0, iban = '') {
+        // 1) Prüfen, ob das Konto existiert
         if (!this.exists(id, userId)) {
             throw new Error(`Bank account with id=${id} does not exist for userId=${userId}`);
         }
 
-        if (!this.isunique(kontoname, userId)) {
-            throw new Error(`Kontoname '${kontoname}' existiert bereits für diesen Benutzer.`);
+        // 2) Alten Datensatz laden, um den alten Namen zu holen
+        const altesKonto = this.loadById(id, userId);
+        const alterName = altesKonto.kontoname;
+
+        // 3) Nur wenn sich der Name wirklich geändert hat, uniqueness checken
+        if (kontoname !== alterName) {
+            if (!this.isunique(kontoname, userId)) {
+                throw new Error(`Kontoname '${kontoname}' existiert bereits für diesen Benutzer.`);
+            }
         }
-        
+
         var sql = `
             UPDATE Bankkonto 
             SET kontoname=?, kontostand=?, iban=? 
@@ -130,7 +138,7 @@ class BankkontoDao {
     }
 
 
-    
+
 
     // Ein Bankkonto löschen
     delete(id, userId) {
