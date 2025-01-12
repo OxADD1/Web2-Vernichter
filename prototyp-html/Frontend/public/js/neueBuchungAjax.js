@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    // "Ein-/Ausgabe"-Button geklickt
-    $("#einAusButton").on("click", function () {
+    // Hinzufüge-Button geklickt
+    $("#addButton").on("click", function () {
         // Eingabewerte erfassen
         const bankkontoId = $("#konto").val();    // ID oder Name des Kontos aus dem Select
         const kategorieId = $("#kategorie").val(); 
@@ -13,6 +13,10 @@ $(document).ready(function () {
         // Validierung
         if (!wert || wert <= 0 || isNaN(wert)) {
             $("#answer").text("Bitte einen gültigen Wert eingeben.");
+            return;
+        } 
+        if (!bankkontoId || !kategorieId || !wert || !transaktionsDatum || !notiz || !typ ) {
+            $("#fehlermeldung").text("Alle Felder müssen befüllt sein.");
             return;
         }
 
@@ -61,6 +65,11 @@ $(document).ready(function () {
         }
         if (bankkontoIdVon === bankkontoIdNach) {
             $("#answer").text("Von- und Zielkonto dürfen nicht identisch sein.");
+            return;
+        }
+
+        if (!bankkontoIdVon || !bankkontoIdNach || !wert || !transaktionsDatum || !notiz) {
+            $("#fehlermeldung").text("Alle Felder müssen befüllt sein.");
             return;
         }
 
