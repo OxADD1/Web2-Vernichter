@@ -77,14 +77,14 @@
 
                 <div class="form-group">
                     <label for="wert">Wert</label>
-                    <input type="text" class="form-control" id="wert" placeholder="0.00 €">
+                    <input type="text" class="form-control" id="wert" placeholder="0.00 €" required>
                     <span id="error-message" class="error-message" style="display: none;">Bitte geben Sie einen gültigen
                         Wert mit maximal zwei Nachkommastellen ein.</span>
                 </div>
 
                 <div class="form-group">
                     <label for="kategorie">Kategorie</label>
-                    <select class="form-control" id="kategorie">
+                    <select class="form-control" id="kategorie" required>
                         <!--<option>Lebensmittel</option>
                     <option>Miete</option>
                     <option>Freizeit</option>-->
@@ -93,18 +93,18 @@
 
                 <div class="form-group">
                     <label for="notiz">Betreff der Buchung</label>
-                    <input type="text" class="form-control" id="notiz" placeholder="z.B. Weihnachtsgeschenk für Klaus">
+                    <input type="text" class="form-control" id="notiz" placeholder="z.B. Weihnachtsgeschenk für Klaus" required>
                 </div>
 
                 <div class="form-group">
                     <label for="datum">Datum</label>
-                    <input type="date" class="form-control" id="datum">
+                    <input type="date" class="form-control" id="datum" required>
                 </div>
 
                 <div id="answer" style="color:red"></div>
-
-                <button type="button" id="einAusButton" class="btn btn-primary btn-add"
-                    onclick="validateInput('wert', 'hinzufuegenModal', 'transaktionForm')">
+                <div id="fehlermeldung" class="text-danger"></div>
+                <button type="button" id="addButton" class="btn btn-primary btn-add"
+                    onclick="validateInput('wert')">
                     Hinzufügen
                 </button>
             </form>
@@ -165,9 +165,9 @@
                 <label for="datumUmbuchung">Datum</label>
                 <input type="date" class="form-control" id="datumUmbuchung">
             </div>
-
+            <div id="fehlermeldung" class="text-danger"></div>
             <button type="button" id="umbuchungButton" class="btn btn-primary btn-add"
-                onclick="validateInput('wertUmbuchung', 'hinzufuegenModal', 'umbuchungsForm2')">
+                onclick="validateInput('wertUmbuchung')">
                 Hinzufügen
             </button>
 
