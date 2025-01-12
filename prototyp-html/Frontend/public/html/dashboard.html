@@ -91,9 +91,7 @@
         </div>
         <div class="col-md-4">
             <label for="categoryFilter">Kategorie:</label>
-            <select class="form-control" id="categoryFilter">
-                <option value="Alle">Alle Kategorien</option>
-            </select>
+            <select class="form-control" id="categoryFilter"></select>
             
         </div>
         <div class="col-md-2 d-flex align-items-end mt-3">
@@ -242,7 +240,20 @@
                 dataType: 'json',
             }).done(function(response) {
                 console.log('Kategorie geladen in Buchungen: ', response);
-                fillButton(response, ["categoryFilter", "editKategorie"], "wähle eine Kategorie aus", "name");
+                fillButton(response, ["editKategorie"], "wähle eine Kategorie aus", 0, "name");
+            }).fail(function(jqXHR) {
+                console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
+            });
+
+            $.ajax({
+                url: 'http://localhost:8000/api/kategorie/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+            }).done(function(response) {
+                console.log('Kategorie geladen in Buchungen: ', response);
+                fillButton(response, ["categoryFilter"], "Alle Kategorien", "Alle", "name");
             }).fail(function(jqXHR) {
                 console.error("Fehler beim Laden der Kategorien: ", jqXHR.response);
             });

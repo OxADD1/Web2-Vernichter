@@ -1,4 +1,4 @@
-function fillButton(dataToFill, ids, text, dbname){
+function fillButton(dataToFill, ids, text, valueOption, dbname){
     ids.forEach(function(id) {
         console.log(id);
         console.log(dbname);
@@ -6,7 +6,7 @@ function fillButton(dataToFill, ids, text, dbname){
         var button = document.getElementById(id);
         //Erstellt default option
         var option = document.createElement("option");
-        option.value = 0;
+        option.value = valueOption;
         option.innerHTML = text;
         //append an button
         button.appendChild(option);
